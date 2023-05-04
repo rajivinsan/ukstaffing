@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sterling-dev-115246-authRole",
+      "UnauthRoleArn": "arn:aws:iam::556948961109:role/amplify-sterling-dev-115246-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::556948961109:role/amplify-sterling-dev-115246-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-sterling-dev-115246-deployment",
+      "UnauthRoleName": "amplify-sterling-dev-115246-unauthRole",
+      "StackName": "amplify-sterling-dev-115246",
+      "StackId": "arn:aws:cloudformation:ap-south-1:556948961109:stack/amplify-sterling-dev-115246/2415c860-bfd5-11ed-8232-023ecd5655ae",
+      "AmplifyAppId": "d207eixmeb8iuy"
+    },
+    "categories": {
+      "auth": {
+        "sterling36f06ffe": {}
+      },
+      "storage": {
+        "sterling": {}
+      }
+    }
+  }
+}

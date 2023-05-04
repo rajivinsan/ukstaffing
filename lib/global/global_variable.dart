@@ -1,0 +1,1 @@
+enum priceFilter { highToLow, lowToHigh }

@@ -1,0 +1,73 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sterling-dev-115246-authRole",
+      "UnauthRoleArn": "arn:aws:iam::556948961109:role/amplify-sterling-dev-115246-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::556948961109:role/amplify-sterling-dev-115246-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-sterling-dev-115246-deployment",
+      "UnauthRoleName": "amplify-sterling-dev-115246-unauthRole",
+      "StackName": "amplify-sterling-dev-115246",
+      "StackId": "arn:aws:cloudformation:ap-south-1:556948961109:stack/amplify-sterling-dev-115246/2415c860-bfd5-11ed-8232-023ecd5655ae",
+      "AmplifyAppId": "d207eixmeb8iuy"
+    }
+  },
+  "auth": {
+    "sterling36f06ffe": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-sterling-dev-115246-deployment/amplify-cfn-templates/auth/sterling36f06ffe-cloudformation-template.json",
+        "logicalId": "authsterling36f06ffe"
+      },
+      "lastPushTimeStamp": "2023-03-11T09:16:05.649Z",
+      "output": {
+        "UserPoolId": "ap-south-1_C3xwcKanK",
+        "AppClientIDWeb": "27ikn3j3quvq0aau0p49otjnn",
+        "AppClientID": "4lq6fdsmqiviek3oagcqinfivo",
+        "IdentityPoolId": "ap-south-1:6996f902-0aca-471e-a80d-ed45543a4dc0",
+        "UserPoolArn": "arn:aws:cognito-idp:ap-south-1:556948961109:userpool/ap-south-1_C3xwcKanK",
+        "IdentityPoolName": "sterling36f06ffe_identitypool_36f06ffe__dev",
+        "UserPoolName": "sterling36f06ffe_userpool_36f06ffe"
+      },
+      "lastPushDirHash": "0dDAOVZrFIBTtrizNL9nQQT3EXk="
+    }
+  },
+  "storage": {
+    "sterling": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "lastPushTimeStamp": "2023-03-11T09:16:05.649Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-sterling-dev-115246-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storagesterling"
+      },
+      "output": {
+        "BucketName": "sterling92775fd71f34443c884bcbd26f251536115246-dev",
+        "Region": "ap-south-1"
+      },
+      "lastPushDirHash": "KCRTyPXE4JHrtf1UfOOAKQpQRf0="
+    }
+  }
+}
