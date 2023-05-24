@@ -13,8 +13,10 @@ import '../../../../utilities/ui/MProgressIndicator.dart';
 import '../../../widgets/stepper_form.dart';
 
 class GettingPage extends ConsumerStatefulWidget {
-  const GettingPage({Key? key, required this.id}) : super(key: key);
+  const GettingPage({Key? key, required this.id, required this.pagestate})
+      : super(key: key);
   final int id;
+  final int pagestate;
   @override
   GettingPageState createState() => GettingPageState();
 }
@@ -91,15 +93,45 @@ class GettingPageState extends ConsumerState<GettingPage> {
         continueFunction: () {
           if (_activeStepIndex < (step().length - 1)) {
             if (inN.text.isNotEmpty) {
-              setState(() {
-                _activeStepIndex += 1;
-              });
+              if (inN.text.length == 9) {
+                setState(() {
+                  _activeStepIndex += 1;
+                });
+              } else {
+                "Please Enter Valid 9 Digit Insurance Nunmber"
+                    .showErrorAlert(context);
+              }
             } else {
-              "Please Inter National Inssurance Nunmber"
-                  .showErrorAlert(context);
+              "Please Enter National Insurance Nunmber".showErrorAlert(context);
             }
           } else {
-            if (bankFormKey.currentState!.validate()) {
+            if (bankFormKey.currentState!.validate() && widget.pagestate == 0) {
+              MProgressIndicator.show(context);
+              ref
+                  .read(authRepositoryProvider)
+                  .postBankDetails(
+                      nin: inN.text.trim(),
+                      bankCode: bankshortcode.text,
+                      name: bankAccountName.text,
+                      accNo: accNo.text)
+                  .then((value) {
+                if (value.success) {
+                  MProgressIndicator.hide();
+                  value.message.showSuccessAlert(context);
+                  ref
+                      .read(listingProvider.notifier)
+                      .updateProfessionList(widget.id);
+                  LocaldbHelper.saveListingDetails(
+                    list: ref.watch(listingProvider),
+                  );
+                  Navigator.pop(context);
+                } else {
+                  value.message.showErrorAlert(context);
+                }
+                print(value);
+              });
+            }
+            if (bankFormKey.currentState!.validate() && widget.pagestate == 1) {
               MProgressIndicator.show(context);
               ref
                   .read(authRepositoryProvider)
@@ -147,7 +179,7 @@ class InsuurenceNumber extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "What's your national inssurance number?",
+          "What's your national insurance number?",
           style: signUpHeadStyle,
         ),
         size10,
@@ -160,6 +192,10 @@ class InsuurenceNumber extends StatelessWidget {
           controller: controller,
           label: "QQKKK",
           validator: (val) {
+            if (val!.length != 9) {
+              return "Enter Valid 9 Digit Insurance Number";
+            }
+
             return null;
           },
         )
@@ -221,10 +257,14 @@ class BankAccountNumber extends StatelessWidget {
             size10,
             CustomTextFormField(
               controller: bankshortcode,
-              label: "Bank Code",
+              label: "Sort Code",
               validator: (val) {
                 if (val == null || bankshortcode.text.trim().isEmpty) {
-                  return "Please enter bank short code";
+                  return "Please enter bank sort code";
+                }
+
+                if (bankshortcode.text.length != 6) {
+                  return "Please enter valid 6 digit bank code";
                 }
                 return null;
               },
@@ -247,6 +287,9 @@ class BankAccountNumber extends StatelessWidget {
               validator: (val) {
                 if (val == null || accNo.text.trim().isEmpty) {
                   return "Please enter bank account number";
+                }
+                if (accNo.text.length != 8) {
+                  return "Please enter valid 8 digit account number";
                 }
                 return null;
               },

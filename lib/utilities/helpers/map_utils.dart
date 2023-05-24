@@ -12,7 +12,7 @@ class MapUtils {
     ); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
 
     await availableMaps.first.showMarker(
-      coords: Coords(latitude, -122.5107336),
+      coords: Coords(latitude, longitude),
       title: location,
     );
   }

@@ -87,8 +87,15 @@ class NextOfKinPage extends ConsumerWidget {
                   controller: kinPhone,
                   label: "Next of kin phone",
                   validator: (vl) {
-                    if (kinName.text.trim().isEmpty) {
+                    if (kinPhone.text.trim().isEmpty) {
                       return "please Enter Kin phone";
+                    }
+                    if ((kinPhone.text.startsWith('0') &&
+                            kinPhone.text.length == 11) ||
+                        (!kinPhone.text.startsWith('0') &&
+                            kinPhone.text.length == 10)) {
+                    } else {
+                      return "Invalid Mobile No";
                     }
                     return null;
                   },

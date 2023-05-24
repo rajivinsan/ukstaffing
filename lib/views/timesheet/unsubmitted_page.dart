@@ -18,25 +18,27 @@ class _UnsubmittedPageState extends State<UnsubmittedPage> {
           children: [
             Image.asset("assets/images/shift_calender.png"),
             size20,
-            Text(
-              'Here you will find all the timesheets to review, approve and that have been approved from the shifts you have worked.',
-              style: redHatMedium.copyWith(
-                color: const Color(
-                  0xff666666,
+            Center(
+              child: Text(
+                'Here you will find all the unsubmited shift',
+                style: redHatMedium.copyWith(
+                  color: const Color(
+                    0xff666666,
+                  ),
+                  fontSize: 20,
                 ),
-                fontSize: 20,
               ),
             ),
             size10,
-            Text(
-              "Apply for shifts now and come back to this screen once you've worked them.",
-              style: redHatbold.copyWith(
-                color: const Color(
-                  0xff666666,
-                ),
-                fontSize: 20,
-              ),
-            )
+            // Text(
+            //   "Apply for shifts now and come back to this screen once you've worked them.",
+            //   style: redHatbold.copyWith(
+            //     color: const Color(
+            //       0xff666666,
+            //     ),
+            //     fontSize: 20,
+            //   ),
+            // )
           ],
         ),
       ),

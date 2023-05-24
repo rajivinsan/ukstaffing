@@ -84,43 +84,43 @@ class _FilterScreenState extends State<FilterScreen> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                AppConstant.whichRoleWork,
-                style: headStyle,
-              ),
-              for (int i = 0; i < roleChecked.length; i++)
-                MediaQuery.removePadding(
-                  context: context,
-                  removeLeft: true,
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      unselectedWidgetColor:
-                          const Color.fromRGBO(11, 95, 255, 0.5),
-                    ),
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          activeColor: const Color(0xff0B5FFF),
-                          value: roleChecked[i].isSelected,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2)),
-                          splashRadius: 2,
-                          onChanged: (value) {
-                            setState(() {
-                              roleChecked[i].isSelected =
-                                  !roleChecked[i].isSelected!;
-                            });
-                          },
-                        ),
-                        Text(
-                          roleChecked[i].name,
-                          style: subStyle,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              size20,
+              // Text(
+              //   AppConstant.whichRoleWork,
+              //   style: headStyle,
+              // ),
+              // for (int i = 0; i < roleChecked.length; i++)
+              //   MediaQuery.removePadding(
+              //     context: context,
+              //     removeLeft: true,
+              //     child: Theme(
+              //       data: Theme.of(context).copyWith(
+              //         unselectedWidgetColor:
+              //             const Color.fromRGBO(11, 95, 255, 0.5),
+              //       ),
+              //       child: Row(
+              //         children: [
+              //           Checkbox(
+              //             activeColor: const Color(0xff0B5FFF),
+              //             value: roleChecked[i].isSelected,
+              //             shape: RoundedRectangleBorder(
+              //                 borderRadius: BorderRadius.circular(2)),
+              //             splashRadius: 2,
+              //             onChanged: (value) {
+              //               setState(() {
+              //                 roleChecked[i].isSelected =
+              //                     !roleChecked[i].isSelected!;
+              //               });
+              //             },
+              //           ),
+              //           Text(
+              //             roleChecked[i].name,
+              //             style: subStyle,
+              //           )
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // size20,
               Text(
                 AppConstant.whichShiftPref,
                 style: headStyle,
@@ -225,49 +225,48 @@ class _FilterScreenState extends State<FilterScreen> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: kbluteColor),
                 ),
-                child: Text(
-                  "All",
+                child: TextFormField(
                   style: subStyle,
                 ),
               ),
-              size20,
-              Text(
-                AppConstant.whichShiftPref,
-                style: headStyle,
-              ),
-              size10,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (int i = 0; i < shiftLoc.length; i++)
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedLoc = i;
-                        });
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color:
-                                selectedLoc == i ? kbluteColor : Colors.white,
-                            border: Border.all(
-                              color: kbluteColor,
-                            ),
-                          ),
-                          child: Text(
-                            shiftLoc[i].name,
-                            style: subStyle.copyWith(
-                              color: selectedLoc == i
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          )),
-                    ),
-                ],
-              ),
+              // size20,
+              // Text(
+              //   AppConstant.whichShiftPref,
+              //   style: headStyle,
+              // ),
+              // size10,
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     for (int i = 0; i < shiftLoc.length; i++)
+              //       InkWell(
+              //         onTap: () {
+              //           setState(() {
+              //             selectedLoc = i;
+              //           });
+              //         },
+              //         child: Container(
+              //             padding: const EdgeInsets.symmetric(
+              //                 horizontal: 15, vertical: 10),
+              //             decoration: BoxDecoration(
+              //               borderRadius: BorderRadius.circular(10),
+              //               color:
+              //                   selectedLoc == i ? kbluteColor : Colors.white,
+              //               border: Border.all(
+              //                 color: kbluteColor,
+              //               ),
+              //             ),
+              //             child: Text(
+              //               shiftLoc[i].name,
+              //               style: subStyle.copyWith(
+              //                 color: selectedLoc == i
+              //                     ? Colors.white
+              //                     : Colors.black,
+              //               ),
+              //             )),
+              //       ),
+              //   ],
+              // ),
               Utility.vSize(SizeConfig.screenHeight! * 0.15)
             ],
           ),

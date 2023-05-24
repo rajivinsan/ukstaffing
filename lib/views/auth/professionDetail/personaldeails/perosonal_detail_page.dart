@@ -18,8 +18,11 @@ import '../../../widgets/stepper_bottom_control.dart';
 import '../../../widgets/stepper_form.dart';
 
 class PerosnalDetailPage extends ConsumerStatefulWidget {
-  const PerosnalDetailPage({Key? key, required this.id}) : super(key: key);
+  const PerosnalDetailPage(
+      {Key? key, required this.id, required this.pagestate})
+      : super(key: key);
   final int id;
+  final int pagestate;
   @override
   PerosnalDetailPageState createState() => PerosnalDetailPageState();
 }
@@ -216,7 +219,8 @@ class PerosnalDetailPageState extends ConsumerState<PerosnalDetailPage> {
             //   //   ),
             //   // );
           } else {
-            if (mobileNoFormkey.currentState!.validate()) {
+            if (widget.pagestate == 0 &&
+                mobileNoFormkey.currentState!.validate()) {
               MProgressIndicator.show(context);
               ref
                   .read(authRepositoryProvider)
@@ -241,7 +245,35 @@ class PerosnalDetailPageState extends ConsumerState<PerosnalDetailPage> {
                 } else {
                   value.message.showErrorAlert(context);
                 }
-                print(value);
+              });
+              // Navigator.pop(context);
+            }
+            if (widget.pagestate == 1 &&
+                mobileNoFormkey.currentState!.validate()) {
+              MProgressIndicator.show(context);
+              ref
+                  .read(authRepositoryProvider)
+                  .updatePersonalDetails(
+                      address:
+                          line1.text + line2.text + city.text + pinCode.text,
+                      gender: selectedGender!,
+                      dob: dobController.text,
+                      conuntry: nationalController.text,
+                      mobile: mobileNo.text)
+                  .then((value) {
+                if (value.success) {
+                  MProgressIndicator.hide();
+                  value.message.showSuccessAlert(context);
+                  ref
+                      .read(listingProvider.notifier)
+                      .updateProfessionList(widget.id);
+                  LocaldbHelper.saveListingDetails(
+                    list: ref.watch(listingProvider),
+                  );
+                  Navigator.pop(context);
+                } else {
+                  value.message.showErrorAlert(context);
+                }
               });
               // Navigator.pop(context);
             }
@@ -326,7 +358,7 @@ class ProfessionAddress extends StatelessWidget {
           size10,
           CustomTextFormField(
             controller: pinCode,
-            label: "Pin code",
+            label: "Post code",
             validator: (val) {
               if (val == null) {
                 return "Please Enter Pin code";
@@ -363,10 +395,10 @@ class _ProfessionSexState extends State<ProfessionSex> {
           style: signUpHeadStyle,
         ),
         size10,
-        Text(
-          "We need this to check your right to wrok",
-          style: signUpSubHeadStyle,
-        ),
+        // Text(
+        //   "We need this to check your right to wrok",
+        //   style: signUpSubHeadStyle,
+        // ),
         size10,
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -419,14 +451,20 @@ class _ProfessionDobState extends State<ProfessionDob> {
           style: signUpSubHeadStyle,
         ),
         size10,
+        Text(
+          "Minimum age 18",
+          style: TextStyle(color: Colors.redAccent),
+        ),
+        size10,
         InkWell(
           onTap: () async {
             showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1950),
-              lastDate: DateTime.now(),
-            ).then((value) {
+                    context: context,
+                    initialDate: DateTime(1951),
+                    firstDate: DateTime(1950),
+                    lastDate:
+                        DateTime.now().subtract(Duration(days: (18 * 365))))
+                .then((value) {
               widget.dobController.text = value.toString().substring(0, 10);
             });
           },
@@ -557,7 +595,14 @@ class ProfessionalPhoneNumber extends StatelessWidget {
               if (val == null || mobileControler.text.trim().isEmpty) {
                 return "Please Enter Mobile No";
               }
-              return null;
+
+              if ((mobileControler.text.startsWith('0') &&
+                      mobileControler.text.length == 11) ||
+                  (!mobileControler.text.startsWith('0') &&
+                      mobileControler.text.length == 10)) {
+              } else {
+                return "Invalid Mobile No";
+              }
             },
           ),
         ],

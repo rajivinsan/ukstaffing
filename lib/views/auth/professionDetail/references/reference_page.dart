@@ -184,14 +184,14 @@ class _ReferenceScreenState extends State<ReferenceScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Text(
-            "Profession References",
+            "Professional References",
             style: codeProHeadStyle.copyWith(shadows: textShadow),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            '''As a nurse , you need two clinical references who are not your friends or family members. we can accept any previous healthcare employer, band 6 nurses or higher or up to one  agency.''',
+            '''You need two professional references who are not your friends or family members. we can accept any previous healthcare employer, band 6 nurses or higher or up to one  agency.''',
             textAlign: TextAlign.justify,
             style: sourceCodeProStyle.copyWith(
               fontWeight: FontWeight.w500,
@@ -241,10 +241,10 @@ class _AddReferencePageState extends State<AddReferencePage> {
           Utility.vSize(20),
           CustomTextFormField(
             controller: widget.employeer,
-            label: "Employer",
+            label: "Name",
             validator: ((val) {
               if (val == null || widget.employeer.text.trim().isEmpty) {
-                return "Please Enter Employer Name";
+                return "Please Enter Name";
               } else {
                 return null;
               }

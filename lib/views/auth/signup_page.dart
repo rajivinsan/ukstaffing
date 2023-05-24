@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sterling/constants/text_style.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
+import 'package:sterling/utilities/helpers/validatorFunction.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
+import 'package:sterling/views/auth/signin_page.dart';
 import 'package:sterling/views/auth/signup_page1.dart';
 import 'package:sterling/views/widgets/common_button.dart';
 import 'package:sterling/views/widgets/custom_text_form_field.dart';
@@ -26,6 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final formkey = GlobalKey<FormState>();
   bool isPassword = false;
   bool isConfirmPassword = false;
+  bool isEmailRegister = false;
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -37,7 +40,14 @@ class _SignUpPageState extends State<SignUpPage> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: CommonButton(
               name: "Continue",
-              onPressed: () {
+              onPressed: () async {
+                var response = await fetchusersbyemail(_email.text);
+                if (response.isNotEmpty) {
+                  isEmailRegister = true;
+                } else {
+                  isEmailRegister = false;
+                }
+
                 if (formkey.currentState!.validate()) {
                   Navigator.push(
                     context,
@@ -107,6 +117,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       }
                       if (!_email.text.trim().isEmail()) {
                         return "Please Enter valid email";
+                      }
+                      if (isEmailRegister) {
+                        return "email account already registred";
                       }
                       return null;
                     },

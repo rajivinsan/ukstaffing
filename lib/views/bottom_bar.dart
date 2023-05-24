@@ -21,7 +21,7 @@ class BottomBarScreen extends ConsumerWidget {
     const UserShifts(),
     const BrowseShift(),
     const TimeSheetMainScreen(),
-    const UserProfileScreen()
+    UserProfileScreen()
   ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -107,6 +107,6 @@ class BottomBarScreen extends ConsumerWidget {
                     ? const BrowseShift()
                     : bottomIndex == 3
                         ? const TimeSheetMainScreen()
-                        : const UserProfileScreen());
+                        : UserProfileScreen());
   }
 }

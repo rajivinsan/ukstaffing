@@ -18,12 +18,10 @@ class LocationShiftDetailScreen extends ConsumerStatefulWidget {
       : super(key: key);
   final int id;
   @override
-  ConsumerState<LocationShiftDetailScreen> createState() =>
-      _LocationShiftDetailScreenState();
+  ConsumerState<LocationShiftDetailScreen> createState() =>     _LocationShiftDetailScreenState();
 }
 
-class _LocationShiftDetailScreenState
-    extends ConsumerState<LocationShiftDetailScreen> {
+class _LocationShiftDetailScreenState   extends ConsumerState<LocationShiftDetailScreen> {
   TextStyle subHeadStyle = redHatNormal.copyWith(
       color: klightTextColor, fontSize: 13, letterSpacing: 0.02);
   @override

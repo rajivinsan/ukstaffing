@@ -18,6 +18,8 @@ class ApiUrl {
   static const shiftBook = "ShiftBook/";
 
   static const shiftDetailUsingID = "Shift/";
+  static const timeSheetDetail = "TimeSheet/";
 
   static const shiftLoc = "ShiftLoc/";
+  static const payMent = "PaymentDetails/";
 }

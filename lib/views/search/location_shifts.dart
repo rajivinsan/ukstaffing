@@ -24,6 +24,7 @@ class _LocationShiftsState extends ConsumerState<LocationShifts> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //Shift Distance Wise
       ref
           .read(locationShiftviewProvider.notifier)
           .getShiftByUserLocartion(type: 1);

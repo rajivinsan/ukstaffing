@@ -52,22 +52,22 @@ class _BackGroundMainScreenState extends State<BackGroundMainScreen> {
               ),
               size20,
               size20,
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: kPrimaryColor,
-                  ),
-                ),
-                child: Text(
-                  "If your certificate was issued before 11 May 2021, please get in touch with the team on our live chat in the right corner of your screen.",
-                  style: sourceCodeProStyle.copyWith(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              size20,
+              // Container(
+              //   padding: const EdgeInsets.all(10),
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(15),
+              //     border: Border.all(
+              //       color: kPrimaryColor,
+              //     ),
+              //   ),
+              //   child: Text(
+              //     "If your certificate was issued before 11 May 2021, please get in touch with the team on our live chat in the right corner of your screen.",
+              //     style: sourceCodeProStyle.copyWith(
+              //       fontSize: 18,
+              //     ),
+              //   ),
+              // ),
+              // size20,
               InkWell(
                 onTap: () {
                   navigate();

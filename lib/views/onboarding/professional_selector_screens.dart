@@ -86,7 +86,7 @@ class SelectProfessionScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 30, right: 30),
                     child: Text(
-                        "Your must trusted staffing service".toUpperCase(),
+                        "Your most trusted staffing service".toUpperCase(),
                         textAlign: TextAlign.center,
                         style: sourceCodeProStyle.copyWith(
                             color: Colors.grey, fontWeight: FontWeight.w700)),
@@ -106,7 +106,7 @@ class SelectProfessionScreen extends StatelessWidget {
                               ));
                         },
                         child: _buildSelectionCard(
-                            title: "Signup As \n Customer",
+                            title: "Signup As \n Candidate",
                             icon: AppImages.customer),
                       ),
                       const SizedBox(

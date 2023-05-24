@@ -7,14 +7,24 @@ import '../../../utilities/ui/size_config.dart';
 import '../shadow_container.dart';
 
 class TimeSheetCard extends StatelessWidget {
-  const TimeSheetCard({Key? key}) : super(key: key);
+  TimeSheetCard(
+      {Key? key,
+      required this.Company,
+      required this.Shift_Date,
+      required this.User_Spent_Time,
+      required this.Pay_Amount});
+
+  String Company;
+  String Shift_Date;
+  String User_Spent_Time;
+  String Pay_Amount;
 
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     var height = SizeConfig.screenHeight;
     return ShadowContainer(
-      height: height! * 0.12,
+      height: height! * 0.13,
       color: containerBackGroundColor,
       child: Row(
         children: [
@@ -52,11 +62,19 @@ class TimeSheetCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Hallgarth Care Home",
+                  this.Company,
                   style: redHatMedium,
                 ),
                 Text(
-                  "Approved",
+                  "Date :" + this.Shift_Date,
+                  style: redHatNormal,
+                ),
+                Text(
+                  "Spent Hours :" + this.User_Spent_Time,
+                  style: redHatNormal,
+                ),
+                Text(
+                  "Amount :" + this.Pay_Amount,
                   style: redHatNormal,
                 ),
               ],

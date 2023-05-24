@@ -1,13 +1,17 @@
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sterling/models/shifts/shifts_details_model.dart';
 import 'package:sterling/models/shifts/shifts_model.dart';
 import 'package:sterling/provider/repository_provider.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
+import 'package:sterling/utilities/helpers/location_helper.dart';
 import 'package:sterling/utilities/helpers/map_utils.dart';
 import 'package:sterling/utilities/ui/MProgressIndicator.dart';
 import 'package:sterling/utilities/extensions/date_format_extension.dart';
+import 'package:sterling/views/widgets/custom_button.dart';
 import '../../constants/app_constant.dart';
 import '../../constants/app_icon_constants.dart';
 import '../../constants/color_constant.dart';
@@ -20,16 +24,29 @@ import '../widgets/custom_divider.dart';
 import '../widgets/error_screen.dart';
 import '../widgets/loading_indicator.dart';
 
-class ShiftBrowsingDetailsScreen extends ConsumerWidget {
+class ShiftBrowsingDetailsScreen extends ConsumerStatefulWidget {
   ShiftBrowsingDetailsScreen(
-      {super.key, required this.isDayShift, this.data, this.id});
+      {super.key,
+      required this.isDayShift,
+      this.locdata,
+      this.id,
+      required this.bookpage});
   final bool isDayShift;
   int? id;
-  ShiftsListongModel? data;
+  ShiftsListongModel? locdata;
+  final bool bookpage;
+
+  ConsumerState<ShiftBrowsingDetailsScreen> createState() =>
+      _ShiftBrowsingDetailsScreenState();
+}
+
+class _ShiftBrowsingDetailsScreenState
+    extends ConsumerState<ShiftBrowsingDetailsScreen> {
+  bool validate = true;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AsyncValue<ShiftDetailModel?> details = ref.watch(
-      shiftDetailsProvider(id ?? 10),
+      shiftDetailsProvider(widget.id ?? 0),
     );
     print(details.value);
     TextStyle whiteSubStyle = redHatNormal.copyWith(
@@ -63,23 +80,80 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10), topRight: Radius.circular(10)),
             ),
-            child: CommonButton(
-                name: "Apply now",
-                onPressed: () {
-                  MProgressIndicator.show(context);
-                  ref
-                      .read(shiftRepositoryProvider)
-                      .applyToShift(shiftId: details.value!.shiftid!)
-                      .then((value) {
-                    MProgressIndicator.hide();
-                    if (value.success) {
-                      "Apply Successfully".showSuccessAlert(context);
-                      Navigator.pop(context);
-                    } else {
-                      "Something Went Wrong".showErrorAlert(context);
-                    }
-                  });
-                }),
+            child: widget.bookpage
+                ? CommonButton(
+                    name: "Apply now",
+                    onPressed: () {
+                      MProgressIndicator.show(context);
+                      ref
+                          .read(shiftRepositoryProvider)
+                          .applyToShift(shiftId: details.value!.shiftid!)
+                          .then((value) {
+                        MProgressIndicator.hide();
+                        if (value.success) {
+                          "Apply Successfully".showSuccessAlert(context);
+                          Navigator.pop(context);
+                        } else {
+                          "Something Went Wrong".showErrorAlert(context);
+                        }
+                      });
+                    })
+                : validate
+                    ? CommonButton(
+                        name: "Validate",
+                        onPressed: () {
+                          MProgressIndicator.show(context);
+                          getDistanceFromCurrentLocation(data.lat!, data.lon!)
+                              .then((v) {
+                            //Check Distance in Meters
+                            if (v > 00) {
+                              // MProgressIndicator.show(context);
+
+                              MProgressIndicator.hide();
+                              "Validations Success".showSuccessAlert(context);
+                              setState(() {
+                                validate = false;
+                              });
+                            } else {
+                              MProgressIndicator.hide();
+                              "You not in Working Area".showErrorAlert(context);
+                            }
+                          });
+                        })
+                    : data.status != null
+                        ? CustomButton(
+                            containerColor: Colors.green,
+                            text:
+                                data.status == 0 ? "End Shift" : "Start Shift",
+                            ontap: () async {
+                              if (await confirm(context)) {
+                                {
+                                  // MProgressIndicator.show(context);
+                                  ref
+                                      .read(shiftRepositoryProvider)
+                                      .shiftStatus(
+                                          shiftId: details.value!.shiftid!)
+                                      .then((value) {
+                                    MProgressIndicator.hide();
+                                    if (value.success) {
+                                      "Shift Apply Successfully"
+                                          .showSuccessAlert(context);
+                                      Navigator.pop(context);
+                                    } else {
+                                      "Something Went Wrong"
+                                          .showErrorAlert(context);
+                                    }
+                                  });
+                                }
+                                return print('pressedOK');
+                              }
+                              return print('pressedCancel');
+                            },
+                            textColor: Colors.white,
+                          )
+                        : TextButton(
+                            onPressed: () {},
+                            child: Text("Shift Start Date ${data.date}")),
           ),
           body: SingleChildScrollView(
               child: Padding(
@@ -91,7 +165,9 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage(
-                          isDayShift ? AppImages.dayshift : AppImages.nighShift,
+                          widget.isDayShift
+                              ? AppImages.dayshift
+                              : AppImages.nighShift,
                         ),
                         fit: BoxFit.cover),
                   ),
@@ -156,7 +232,7 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
                                     "PAY",
                                     style: codeProHeadStyle.copyWith(
                                         fontSize: 14,
-                                        color: isDayShift
+                                        color: widget.isDayShift
                                             ? const Color(0xffFF7613)
                                             : const Color(0xff581172)),
                                   ),
@@ -196,7 +272,7 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  this.data!.company.toString(),
+                                  widget.locdata!.company.toString(),
                                   style: redHatMedium.copyWith(fontSize: 20),
                                 ),
                               ),
@@ -204,20 +280,20 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: isDayShift
+                                  color: widget.isDayShift
                                       ? const Color(0xffFF7613)
                                       : const Color(0xff581172),
                                   borderRadius: BorderRadius.circular(25),
                                 ),
                                 child: Text(
-                                  "${this.data!.distance!.toStringAsFixed(3)} Miles",
+                                  "${widget.locdata!.distance!.toStringAsFixed(3)} Miles",
                                   style: whiteSubStyle,
                                 ),
                               ),
                               Utility.hSize(10),
                               SvgPicture.asset(
                                 SvgAsset.forward1,
-                                color: isDayShift
+                                color: widget.isDayShift
                                     ? const Color(0xffFF7613)
                                     : const Color(0xff581172),
                               )
@@ -383,7 +459,7 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
                             Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Text(
-                                "Parkhouse Avenue , \nCastletown , Sunderland , SR5 3DF",
+                                "${data.address!}" ",${data.postcode}",
                                 style: redHatNormal.copyWith(
                                   color: klightTextColor,
                                   fontSize: 16,
@@ -493,4 +569,20 @@ class ShiftBrowsingDetailsScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<double> getDistanceFromCurrentLocation(double lat, double lng) async {
+  // Get current location
+
+  //LocationPermission permission = await Geolocator.requestPermission();
+
+  Position position = await LocationHelper().checkAndGetLocation();
+
+  // Calculate distance between current location and given latitude and longitude
+  double distanceInMeters = await Geolocator.distanceBetween(
+      position.latitude, position.longitude, lat, lng);
+
+  // Convert distance to kilometers and round to two decimal places
+  //double distanceInKm = distanceInMeters / 1000;
+  return double.parse(distanceInMeters.toStringAsFixed(2));
 }

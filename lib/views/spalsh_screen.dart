@@ -4,6 +4,8 @@ import 'package:sterling/constants/app_icon_constants.dart';
 import 'package:sterling/services/local_db_helper.dart';
 import 'package:sterling/views/auth/professional_detail_listing.dart';
 
+import 'auth/signin_page.dart';
+import 'bottom_bar.dart';
 import 'onboarding/professional_selector_screens.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,12 +35,19 @@ class _SplashScreenState extends State<SplashScreen> {
   navigateTo() {
     Future.delayed(const Duration(seconds: 3), () async {
       final isSignup = await LocaldbHelper.isSignUp();
+      final cid = await LocaldbHelper.getToken();
       if (isSignup!) {
         // ignore: use_build_context_synchronously
+        var user = await fetchbyid(cid);
+
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ProfessionalDetailListing(),
+            builder: (context) => (user.isNotEmpty && user[0].status == 1)
+                ? BottomBarScreen()
+                : ProfessionalDetailListing(
+                    pagestate: 0,
+                  ),
           ),
         );
       }

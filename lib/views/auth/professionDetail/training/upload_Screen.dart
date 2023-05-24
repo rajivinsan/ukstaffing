@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sterling/constants/app_constant.dart';
 import 'package:sterling/constants/app_icon_constants.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
@@ -18,10 +19,15 @@ import '../../../widgets/progressbar_appbar.dart';
 
 class UploadScreen extends ConsumerStatefulWidget {
   const UploadScreen(
-      {super.key, required this.uploadCertificateName, required this.id});
+      {super.key,
+      required this.uploadCertificateName,
+      required this.id,
+      required this.pagestate});
   final String uploadCertificateName;
 
   final int id;
+
+  final int pagestate;
   @override
   ConsumerState<UploadScreen> createState() => _UploadScreenState();
 }
@@ -52,45 +58,45 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             ),
             size20,
             size20,
-            InkWell(
-              onTap: () {
-                openCalender();
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                width: SizeConfig.screenWidth!,
-                decoration: BoxDecoration(
-                    color: containerBackGroundColor,
-                    boxShadow: const [
-                      BoxShadow(
-                        offset: Offset(0, 4),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                        color: Color.fromRGBO(
-                          0,
-                          0,
-                          0,
-                          0.5,
-                        ),
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  children: [
-                    Text(
-                      dates == null ? 'Date' : dates!,
-                      style: codeProHeadStyle.copyWith(
-                          color: kLightTextColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    SvgPicture.asset(SvgAsset.calender)
-                  ],
-                ),
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     openCalender();
+            //   },
+            //   child: Container(
+            //     padding:
+            //         const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+            //     width: SizeConfig.screenWidth!,
+            //     decoration: BoxDecoration(
+            //         color: containerBackGroundColor,
+            //         boxShadow: const [
+            //           BoxShadow(
+            //             offset: Offset(0, 4),
+            //             blurRadius: 4,
+            //             spreadRadius: 0,
+            //             color: Color.fromRGBO(
+            //               0,
+            //               0,
+            //               0,
+            //               0.5,
+            //             ),
+            //           )
+            //         ],
+            //         borderRadius: BorderRadius.circular(10)),
+            //     child: Row(
+            //       children: [
+            //         Text(
+            //           dates == null ? 'Date' : dates!,
+            //           style: codeProHeadStyle.copyWith(
+            //               color: kLightTextColor,
+            //               fontSize: 18,
+            //               fontWeight: FontWeight.bold),
+            //         ),
+            //         const Spacer(),
+            //         SvgPicture.asset(SvgAsset.calender)
+            //       ],
+            //     ),
+            //   ),
+            // ),
             size20,
             InkWell(
               onTap: () {
@@ -253,7 +259,8 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
     AwsS3Configuration.upload(path: docs!).then((value) {
       if (value != "") {
         AwsS3Configuration.getUrl(key: value).then((value) {
-          if (value != "") {
+          //insert new doc
+          if (value != "" && widget.pagestate == 0) {
             MProgressIndicator.hide();
             setState(() {
               url = value;
@@ -272,6 +279,59 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                     .updateProfessionList(widget.id);
                 LocaldbHelper.saveTrainingListingDetails(
                     list: ref.watch(trainingListingProvider));
+                final trainglist = ref.watch(trainingListingProvider);
+                final traingunCompleteList = trainglist
+                    .where((element) => element.isUploaded == false)
+                    .toList();
+                final traingcompeletedList = trainglist
+                    .where((element) => element.isUploaded == true)
+                    .toList();
+                if (traingcompeletedList.length == certificationList.length) {
+                  ref.read(listingProvider.notifier).updateProfessionList(2);
+                  LocaldbHelper.saveListingDetails(
+                    list: ref.watch(listingProvider),
+                  );
+                }
+                Navigator.pop(context);
+              } else {
+                value.message.showErrorAlert(context);
+              }
+            });
+          }
+
+          //update existing doc
+          if (value != "" && widget.pagestate == 1) {
+            MProgressIndicator.hide();
+            setState(() {
+              url = value;
+            });
+
+            ref
+                .read(authRepositoryProvider)
+                .updateuploadDoc(
+                    cid: 2, docType: widget.uploadCertificateName, url: url!)
+                .then((value) {
+              MProgressIndicator.hide();
+              if (value.success) {
+                value.message.showSuccessAlert(context);
+                ref
+                    .read(trainingListingProvider.notifier)
+                    .updateProfessionList(widget.id);
+                LocaldbHelper.saveTrainingListingDetails(
+                    list: ref.watch(trainingListingProvider));
+                final trainglist = ref.watch(trainingListingProvider);
+                final traingunCompleteList = trainglist
+                    .where((element) => element.isUploaded == false)
+                    .toList();
+                final traingcompeletedList = trainglist
+                    .where((element) => element.isUploaded == true)
+                    .toList();
+                if (traingcompeletedList.length == certificationList.length) {
+                  ref.read(listingProvider.notifier).updateProfessionList(2);
+                  LocaldbHelper.saveListingDetails(
+                    list: ref.watch(listingProvider),
+                  );
+                }
                 Navigator.pop(context);
               } else {
                 value.message.showErrorAlert(context);

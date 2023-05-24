@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sterling/constants/app_constant.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
 import 'package:sterling/provider/services_provider.dart';
@@ -10,7 +11,9 @@ import 'package:sterling/views/auth/professionDetail/training/upload_Screen.dart
 import 'package:sterling/views/widgets/progressbar_appbar.dart';
 
 class TrainingPage extends ConsumerWidget {
-  const TrainingPage({Key? key}) : super(key: key);
+  const TrainingPage({Key? key, required this.pagestate}) : super(key: key);
+
+  final int pagestate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,6 +23,10 @@ class TrainingPage extends ConsumerWidget {
         list.where((element) => element.isUploaded == false).toList();
     final compeletedList =
         list.where((element) => element.isUploaded == true).toList();
+
+    if (compeletedList.length == certificationList.length) {
+      Navigator.pop(context);
+    }
 
     return Scaffold(
       appBar: const AppBarProgress(name: "Training", progress: 0.2),
@@ -66,6 +73,7 @@ class TrainingPage extends ConsumerWidget {
                                   id: unCompleteList[index].id,
                                   uploadCertificateName:
                                       unCompleteList[index].name,
+                                  pagestate: pagestate,
                                 ),
                               ),
                             );

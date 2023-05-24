@@ -12,7 +12,7 @@ class HomeState {
   HomeState copWith({
     Status? status,
     int? offset,
-    List<ShiftsListongModel>? data,
+    List<dynamic>? data,
     String? errorMessage,
   }) {
     return HomeState(
@@ -40,5 +40,5 @@ class HomeState {
   final Status status;
   final int offset;
   final String errorMessage;
-  final List<ShiftsListongModel>? data;
+  final List<dynamic>? data;
 }

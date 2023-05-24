@@ -1,13 +1,20 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
+import 'package:sterling/models/postcode.dart';
+import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
 import 'package:sterling/views/auth/signup_professional_details.dart';
 import 'package:sterling/views/widgets/custom_text_form_field.dart';
 import 'package:sterling/views/widgets/stepper_bottom_control.dart';
 import 'package:sterling/views/widgets/stepper_form.dart';
-
+import 'package:http/http.dart' as http;
 import '../widgets/shifts_selection.dart';
+
+late double _lat;
+late double _lon;
 
 class SignUpPage1 extends StatefulWidget {
   const SignUpPage1(
@@ -150,7 +157,8 @@ class _SignUpPage1State extends State<SignUpPage1>
               _activeStepIndex += 1;
             });
           } else {
-            if (formkey.currentState!.validate()) {
+            if (formkey.currentState!.validate() &&
+                (_lat != null && _lon != null)) {
               print(postCode.text.trim());
 
               Navigator.push(
@@ -163,6 +171,8 @@ class _SignUpPage1State extends State<SignUpPage1>
                     numberOfShift: shiftSelectionValue.toString(),
                     password: widget.password,
                     postalCode: postCode.text.trim(),
+                    lat: _lat,
+                    lon: _lon,
                   ),
                 ),
               );
@@ -202,7 +212,7 @@ class NumberShiftsScreen extends StatelessWidget {
               height: 20,
             ),
             Text(
-              "Let us know the number of shifts you'd ideally like to work per year",
+              "Let us know the number of shifts you'd ideally like to work per week",
               style: signUpSubHeadStyle,
             ),
             const SizedBox(
@@ -225,15 +235,23 @@ class NumberShiftsScreen extends StatelessWidget {
   bool get wantKeepAlive => true;
 }
 
-class PostalCodeScreen extends StatelessWidget {
+class PostalCodeScreen extends StatefulWidget {
   PostalCodeScreen({super.key, required this.postlCode, required this.formkey});
   final TextEditingController postlCode;
   GlobalKey<FormState> formkey;
+
+  @override
+  State<PostalCodeScreen> createState() => _PostalCodeScreenState();
+}
+
+class _PostalCodeScreenState extends State<PostalCodeScreen> {
+  bool postvalidate = false;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Form(
-      key: formkey,
+      key: widget.formkey,
       child: Container(
         color: Colors.white,
         child: Column(
@@ -254,18 +272,59 @@ class PostalCodeScreen extends StatelessWidget {
               height: 20,
             ),
             CustomTextFormField(
-              controller: postlCode,
+              controller: widget.postlCode,
               validator: (value) {
                 if (value!.isEmpty) {
                   return "Please Enter Postal Code";
                 }
+                if (!postvalidate) {
+                  return "invalid Post Code";
+                }
+
                 return null;
               },
               label: "Postcode",
+              sufficIcon: postvalidate == true
+                  ? Icon(
+                      Icons.verified_rounded,
+                      color: Colors.green,
+                    )
+                  : null,
             ),
             SizedBox(
-              height: SizeConfig.screenHeight! * 0.1,
+              height: 10,
             ),
+            Center(
+              child: ElevatedButton(
+                  onPressed: () async {
+                    final response = await http.get(Uri.parse(
+                        "https://api.postcodes.io/postcodes/" +
+                            widget.postlCode.text));
+
+                    if (response.statusCode == 200) {
+                      var data = postcodeFromJson(response.body);
+
+                      setState(() {
+                        _lat = data.result.latitude;
+                        _lon = data.result.longitude;
+
+                        postvalidate = true;
+                      });
+
+                      widget.formkey.currentState!.validate();
+                    } else if (response.statusCode == 404) {
+                      setState(() {
+                        postvalidate = false;
+                      });
+                      "Invalid postcode ".showErrorAlert(context);
+                    } else {
+                      // If the server did not return a 200 OK response,
+                      // then throw an exception.
+                      "error in api request ".showErrorAlert(context);
+                    }
+                  },
+                  child: Text("Validate Postal Code")),
+            )
           ],
         ),
       ),

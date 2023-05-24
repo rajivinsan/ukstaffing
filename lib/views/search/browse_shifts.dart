@@ -26,15 +26,17 @@ class _BrowseShiftState extends State<BrowseShift>
       appBarName: "My Shifts",
       length: 2,
       onTap: (value) {},
-      tabWidget: const [
-        FindUserShift(),
-        LocationShifts(),
+      tabWidget: [
+        //2 order by date // 1 order by distance
+        FindUserShift(ordertype: 2),
+        FindUserShift(ordertype: 1),
+        //LocationShifts(),
       ],
       tabController: _tabController,
       widget: const [
-        Text("Find Shifts"),
+        Text("Date wise Shifts"),
         Text(
-          "Location",
+          "Distance Wise Shift",
         ),
       ],
     );

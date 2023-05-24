@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sterling/constants/app_icon_constants.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
+import 'package:sterling/models/Registeration.dart';
 import 'package:sterling/provider/repository_provider.dart';
+import 'package:sterling/provider/services_provider.dart';
 import 'package:sterling/services/local_db_helper.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/MProgressIndicator.dart';
@@ -22,13 +24,17 @@ class SignupProfessional extends ConsumerStatefulWidget {
       required this.lastName,
       required this.numberOfShift,
       required this.password,
-      required this.postalCode});
+      required this.postalCode,
+      required this.lat,
+      required this.lon});
   final String firstName;
   final String lastName;
   final String email;
   final String password;
   final String postalCode;
   final String numberOfShift;
+  final double lat;
+  final double lon;
   @override
   SignupProfessionalState createState() => SignupProfessionalState();
 }
@@ -39,7 +45,7 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
 
   final PageController controller = PageController(initialPage: 0);
   String? professionStyle = "Carer";
-  String? preferWork;
+  String? preferWork = "Day";
   List<SlectionWithPictureModel> list = [
     SlectionWithPictureModel(
         image: AppImages.carer, isSelected: true, name: "Carer"),
@@ -161,9 +167,9 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
               _activeStepIndex += 1;
             });
           } else {
-            // if (preferWork == null) {
-            //   "Please Select Profession".showErrorAlert(context);
-            // }
+            if (preferWork == null) {
+              "Please Select Profession".showErrorAlert(context);
+            }
 
             if (professionStyle == null) {
               "Please Select Shift".showErrorAlert(context);
@@ -313,7 +319,7 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
               height: 10,
             ),
             Text(
-              "Let us Know what type of nurse shifts you would prefer to work ",
+              "Let us Know what type of shifts you would prefer to work ",
               style: signUpSubHeadStyle,
             ),
             const SizedBox(
@@ -373,7 +379,7 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
                                           fit: BoxFit.contain,
                                           height: 130,
                                         )),
-                                    if (e.isSelected!)
+                                    if (preferWork == e.name)
                                       Container(
                                         margin: const EdgeInsets.all(6),
                                         padding: const EdgeInsets.all(0),
@@ -422,16 +428,43 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
       "profession": professionStyle == "Carer" ? 1 : 2,
       "shifttype": 2,
     };
+
+    Registration res = new Registration(
+        cid: 0,
+        firstName: widget.firstName,
+        lastName: widget.lastName,
+        email: widget.email,
+        pass: widget.password,
+        shift: int.parse(widget.numberOfShift),
+        postcode: widget.postalCode,
+        //Carer 1 and Nurse 2
+        profession: professionStyle == "Carer" ? 1 : 2,
+
+        //Day 1 and Night 2
+        shifttype: preferWork == "Day" ? 1 : 2,
+        lat: widget.lat,
+        lon: widget.lon,
+        dated: DateTime.now(),
+        status: 0);
     try {
       final authProvider = ref!.read(authRepositoryProvider);
       MProgressIndicator.show(context);
 
-      authProvider.userRegistration(body).then((value) {
+      authProvider.userRegistration(res.toJson()).then((value) {
         MProgressIndicator.hide();
         if (value.success) {
           value.message.showSuccessAlert(context);
           LocaldbHelper.saveSignup(isSignUp: true);
           LocaldbHelper.saveToken(token: value.data["cid"]);
+          LocaldbHelper.saveUserName(
+              name: widget.firstName + " " + widget.lastName);
+
+          if (professionStyle == "Carer") {
+            ref.read(listingProvider.notifier).updateProfessionList(8);
+            LocaldbHelper.saveListingDetails(
+              list: ref.watch(listingProvider),
+            );
+          }
 
           Navigator.pushReplacement(
             context,

@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:sterling/constants/enum.dart';
+
 List<ShiftDetailModel> shiftDetailModelFromJson(String str) =>
     List<ShiftDetailModel>.from(
         json.decode(str).map((x) => ShiftDetailModel.fromJson(x)));
@@ -12,29 +14,30 @@ String shiftDetailModelToJson(List<ShiftDetailModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ShiftDetailModel {
-  ShiftDetailModel({
-    this.shiftid,
-    this.category,
-    this.date,
-    this.shiftTime,
-    this.postcode,
-    this.company,
-    this.price,
-    this.shiftDetailModelBreak,
-    this.lat,
-    this.lon,
-    this.distance,
-    this.city,
-    this.noCandidate,
-    this.shiftType,
-  });
+  ShiftDetailModel(
+      {this.shiftid,
+      this.category,
+      this.date,
+      this.shiftTime,
+      this.postcode,
+      this.company,
+      this.price,
+      this.shiftDetailModelBreak,
+      this.lat,
+      this.lon,
+      this.distance,
+      this.city,
+      this.noCandidate,
+      this.shiftType,
+      this.status,
+      this.address});
 
   final int? shiftid;
-  final int? category;
+  final String? category;
   final DateTime? date;
   final ShiftTime? shiftTime;
   final String? postcode;
-  final int? company;
+  final String? company;
   final num? price;
   final String? shiftDetailModelBreak;
   final double? lat;
@@ -43,6 +46,8 @@ class ShiftDetailModel {
   final dynamic city;
   final int? noCandidate;
   final dynamic shiftType;
+  final int? status;
+  final String? address;
 
   factory ShiftDetailModel.fromJson(Map<String, dynamic> json) =>
       ShiftDetailModel(
@@ -57,11 +62,13 @@ class ShiftDetailModel {
         price: json["price"],
         shiftDetailModelBreak: json["break"],
         lat: json["lat"]?.toDouble(),
-        lon: json["lon"]?.toDouble(),
+        lon: json["long"]?.toDouble(),
         distance: json["distance"],
         city: json["city"],
         noCandidate: json["noCandidate"],
         shiftType: json["shiftType"],
+        status: json["status"],
+        address: json["address"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,6 +86,8 @@ class ShiftDetailModel {
         "city": city,
         "noCandidate": noCandidate,
         "shiftType": shiftType,
+        "status": status,
+        "address": address,
       };
 }
 

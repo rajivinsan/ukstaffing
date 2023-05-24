@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sterling/provider/repository_provider.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/MProgressIndicator.dart';
+import 'package:sterling/views/auth/thanks.dart';
 
 import '../../constants/color_constant.dart';
 import '../../constants/text_style.dart';
@@ -59,15 +60,21 @@ class _EmployerSignUpState extends ConsumerState<EmployerSignUp> {
                             message: _messageController.text,
                             urls: "",
                             type: 1)
-                        .then((value) {
-                      MProgressIndicator.hide();
-                      if (value.success) {
-                        value.message.showSuccessAlert(context);
-                        Navigator.pop(context);
-                      } else {
-                        value.message.showErrorAlert(context);
-                      }
-                    },);
+                        .then(
+                      (value) {
+                        MProgressIndicator.hide();
+                        if (value.success) {
+                          value.message.showSuccessAlert(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ThankYouPage()),
+                          );
+                        } else {
+                          value.message.showErrorAlert(context);
+                        }
+                      },
+                    );
 
                     // Navigator.push(
                     //   context,

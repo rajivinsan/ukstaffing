@@ -191,7 +191,6 @@ class _IdBadgePageState extends ConsumerState<IdBadgePage> {
       (value) {
         MProgressIndicator.hide();
         if (value.success) {
-          value.message.showErrorAlert(context);
           ref.read(listingProvider.notifier).updateProfessionList(widget.id);
           LocaldbHelper.saveListingDetails(
             list: ref.watch(listingProvider),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
 import 'package:sterling/provider/services_provider.dart';
+import 'package:sterling/repository/APIBase/api_url.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
 import 'package:sterling/views/auth/professionDetail/NMC/nmc_page.dart';
 import 'package:sterling/views/auth/professionDetail/bankdetails/getting_paid_page.dart';
@@ -12,16 +13,22 @@ import 'package:sterling/views/auth/professionDetail/personaldeails/perosonal_de
 import 'package:sterling/views/auth/professionDetail/references/reference_page.dart';
 import 'package:sterling/views/auth/professionDetail/training/training_page.dart';
 import 'package:sterling/views/auth/professionDetail/workhistory/work_details_screen.dart';
+import 'package:sterling/views/auth/thanks.dart';
 import 'package:sterling/views/spalsh_screen.dart';
 import 'package:sterling/views/widgets/common_button.dart';
+import 'package:http/http.dart' as http;
 
 import '../../services/local_db_helper.dart';
-import '../bottom_bar.dart';
+
 import 'professionDetail/background/background_main_screen.dart';
 
 class ProfessionalDetailListing extends ConsumerWidget {
-  const ProfessionalDetailListing({Key? key}) : super(key: key);
+  ProfessionalDetailListing({Key? key, required this.pagestate})
+      : super(key: key);
 
+  final int pagestate;
+//pagestate 0 for new recoed
+//pagestate 1 for update recoed
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     SizeConfig.init(context);
@@ -41,14 +48,21 @@ class ProfessionalDetailListing extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          "All Details",
-          style: sourceCodeProStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: kPrimaryColor,
-          ),
-        ),
+        title: pagestate == 0
+            ? Text("All Details",
+                style: sourceCodeProStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: kPrimaryColor,
+                ))
+            : Text(
+                "Update Details",
+                style: sourceCodeProStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: kPrimaryColor,
+                ),
+              ),
         leading: const BackButton(
           color: Colors.black,
         ),
@@ -117,32 +131,38 @@ class ProfessionalDetailListing extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Overall Progress",
-                style: sourceCodeProStyle.copyWith(
-                    fontWeight: FontWeight.bold, fontSize: 16),
-              ),
+              pagestate == 0
+                  ? Text(
+                      "Overall Progress",
+                      style: sourceCodeProStyle.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    )
+                  : Container(),
               size20,
-              Center(
-                child: Text(
-                  " ${overallProgress.ceil().toString()} %",
-                  style: sourceCodeProStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: SizedBox(
-                  height: 10,
-                  child: LinearProgressIndicator(
-                    color: kPrimaryColor,
-                    value: overallProgress / 100, // percent filled
-                    // valueColor: AlwaysStoppedAnimation<Color>(
-                    //     kPrimaryColor.withOpacity(0.1)),
-                    backgroundColor: kPrimaryColor.withOpacity(0.4),
-                  ),
-                ),
-              ),
+              pagestate == 0
+                  ? Center(
+                      child: Text(
+                        " ${overallProgress.ceil().toString()} %",
+                        style: sourceCodeProStyle.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    )
+                  : Container(),
+              pagestate == 0
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        height: 10,
+                        child: LinearProgressIndicator(
+                          color: kPrimaryColor,
+                          value: overallProgress / 100, // percent filled
+                          // valueColor: AlwaysStoppedAnimation<Color>(
+                          //     kPrimaryColor.withOpacity(0.1)),
+                          backgroundColor: kPrimaryColor.withOpacity(0.4),
+                        ),
+                      ),
+                    )
+                  : Container(),
               size20,
               unCompleteList.isEmpty
                   ? const Text("All Data updated")
@@ -157,11 +177,13 @@ class ProfessionalDetailListing extends ConsumerWidget {
                               case 1:
                                 navigate(
                                     PerosnalDetailPage(
-                                        id: unCompleteList[index].id),
+                                        id: unCompleteList[index].id,
+                                        pagestate: pagestate),
                                     context);
                                 break;
                               case 2:
-                                navigate(const TrainingPage(), context);
+                                navigate(TrainingPage(pagestate: pagestate),
+                                    context);
                                 break;
                               case 3:
                                 navigate(
@@ -180,6 +202,7 @@ class ProfessionalDetailListing extends ConsumerWidget {
                               case 5:
                                 navigate(
                                   GettingPage(
+                                    pagestate: pagestate,
                                     id: unCompleteList[index].id,
                                   ),
                                   context,
@@ -338,14 +361,48 @@ class ProfessionalDetailListing extends ConsumerWidget {
                 },
               ),
               size20,
-              CommonButton(
-                  name: "Submit",
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomBarScreen()));
-                  })
+              pagestate == 0
+                  ? CommonButton(
+                      name: "Submit",
+                      onPressed: () async {
+                        if (overallProgress >= 100) {
+                          var id = await LocaldbHelper.getToken();
+                          final response = await http.put(Uri.parse(
+                              ApiUrl.apiBaseUrl +
+                                  ApiUrl.signUp +
+                                  "/" +
+                                  id.toString()));
+
+                          if (response.statusCode == 200) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ThankYouPage()));
+                          } else {
+                            throw Exception('Failed to load data');
+                          }
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text("Data Not Completed",
+                                        style:
+                                            TextStyle(color: Colors.red[300])),
+                                    content: Text(
+                                        "Please complete all data uploads/documents etc. Make Sure overall progress 100%",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'OK'),
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  ));
+                        }
+                      })
+                  : Container()
             ],
           ),
         ),

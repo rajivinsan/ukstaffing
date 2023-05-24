@@ -8,6 +8,19 @@ import 'package:sterling/views/auth/professionDetail/training/training_page.dart
 class LocaldbHelper {
   static SharedPreferences? prefs;
 
+  static Future saveUserName({@required String? name}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("username", name!);
+  }
+
+  static Future<String?> getUserName() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.containsKey("username")) {
+      return sharedPreferences.getString("username");
+    }
+    return null;
+  }
+
   static Future saveToken({@required String? token}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("token", token!);

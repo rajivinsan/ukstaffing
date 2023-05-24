@@ -17,7 +17,7 @@ class _UserShiftsState extends State<UserShifts>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     super.initState();
   }
 
@@ -25,15 +25,12 @@ class _UserShiftsState extends State<UserShifts>
   Widget build(BuildContext context) {
     return CustomTabBarView(
       appBarName: "My Shifts",
-      length: 2,
+      length: 1,
       onTap: (value) {},
-      tabWidget: const [BookedUserShifts(), UserApplicationShift()],
+      tabWidget: const [BookedUserShifts()],
       tabController: _tabController,
       widget: const [
         Text("Booked Shifts"),
-        Text(
-          "Application",
-        ),
       ],
     );
   }

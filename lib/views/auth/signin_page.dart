@@ -2,19 +2,25 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:sterling/constants/text_style.dart';
+import 'package:sterling/models/api_response.dart';
 import 'package:sterling/repository/APIBase/apiFunction.dart';
+import 'package:sterling/repository/APIBase/api_response.dart';
+
 import 'package:sterling/repository/APIBase/api_url.dart';
 
 import 'package:sterling/services/local_db_helper.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
+
 import 'package:sterling/views/auth/professional_detail_listing.dart';
-import 'package:sterling/views/auth/signup_page1.dart';
+
 import 'package:sterling/views/bottom_bar.dart';
+import 'package:sterling/views/onboarding/professional_selector_screens.dart';
 import 'package:sterling/views/widgets/common_button.dart';
 import 'package:sterling/views/widgets/custom_text_form_field.dart';
 import 'package:http/http.dart' as http;
-import '../home/dashboard_home_scree.dart';
+
+import 'forget/forgot_password_screen.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -53,7 +59,7 @@ class _SignInPageState extends State<SignInPage> {
           title: Text("Sign IN", style: codeProHeadStyle),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Form(
             key: formkey,
             child: Column(
@@ -101,6 +107,7 @@ class _SignInPageState extends State<SignInPage> {
                         if (_firstName.text == 'demoaccount@hotmail.com' &&
                             _password.text == 'Demo@123') {
                           LocaldbHelper.saveToken(token: '15');
+                          LocaldbHelper.saveSignup(isSignUp: true);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -108,23 +115,62 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                           );
                         } else {
-                          await fetchusers(_firstName.text).then((value) {
-                            if (value[0].pass.trim() == _password.text.trim()) {
+                          await fetchusersbyemail(_firstName.text)
+                              .then((value) {
+                            if (value.isNotEmpty &&
+                                value[0].pass.trim() == _password.text.trim()) {
                               LocaldbHelper.saveToken(
                                   token: value[0].cid.toString());
                               LocaldbHelper.saveSignup(isSignUp: true);
+                              LocaldbHelper.saveUserName(
+                                  name:
+                                      "${value[0].firstName} ${value[0].lastName}");
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BottomBarScreen(),
+                                  builder: (context) => value[0].status == 1
+                                      ? BottomBarScreen()
+                                      : ProfessionalDetailListing(
+                                          pagestate: 0,
+                                        ),
                                 ),
                               );
+                            } else {
+                              "Invalid account details".showErrorAlert(context);
                             }
                           });
                         }
                       }
-                    })
+                    }),
+                Center(
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ForgotPassword()),
+                        );
+                      },
+                      child: Text(
+                        "Forgat Password",
+                        style: TextStyle(color: Colors.orange),
+                      )),
+                ),
+                Center(
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SelectProfessionScreen()),
+                        );
+                      },
+                      child: Text(
+                        "Don't have account? Register Now",
+                        style: TextStyle(fontSize: 18),
+                      )),
+                )
               ],
             ),
           ),
@@ -171,9 +217,47 @@ class _SignInPageState extends State<SignInPage> {
 //
 //    final register = registerFromJson(jsonString);
 
-Future<List<Register>> fetchusers(String email) async {
+Future<List<Register>> fetchusersbyemail(String email) async {
   final response = await http
       .get(Uri.parse(ApiUrl.apiBaseUrl + ApiUrl.signUp + '/' + email));
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return registerFromJson(response.body);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load data');
+  }
+}
+
+Future<http.Response?> postByid(int cid, dynamic val) async {
+  try {
+    final response = await http.post(
+      Uri.parse(ApiUrl.apiBaseUrl + ApiUrl.signUp + '/Postbyid/1055'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(val),
+    );
+
+    if (response.statusCode == 201) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      return response;
+    }
+  } catch (exception) {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    print(exception);
+    return null;
+  }
+}
+
+Future<List<Register>> fetchbyid(dynamic id) async {
+  final response = await http
+      .get(Uri.parse(ApiUrl.apiBaseUrl + ApiUrl.signUp + '/Getbyid/' + id));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,

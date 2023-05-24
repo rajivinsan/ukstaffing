@@ -153,29 +153,29 @@ class _UploadBackgroundDBSState extends ConsumerState<UploadBackgroundDBS> {
               ),
             ),
             Utility.vSize(30),
-            Center(
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "If you don’t have DBS apply with us",
-                      style: sourceCodeProStyle.copyWith(fontSize: 17),
-                    ),
-                    TextSpan(
-                      text: ' email to support ',
-                      style: sourceCodeProStyle.copyWith(fontSize: 17),
-                    ),
-                    TextSpan(
-                      text: "@xyz.com",
-                      style: sourceCodeProStyle.copyWith(
-                          fontSize: 17,
-                          color: const Color.fromRGBO(35, 106, 242, 1)),
-                    )
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            // Center(
+            //   child: Text.rich(
+            //     TextSpan(
+            //       children: [
+            //         TextSpan(
+            //           text: "If you don’t have DBS apply with us",
+            //           style: sourceCodeProStyle.copyWith(fontSize: 17),
+            //         ),
+            //         TextSpan(
+            //           text: ' email to support ',
+            //           style: sourceCodeProStyle.copyWith(fontSize: 17),
+            //         ),
+            //         TextSpan(
+            //           text: "@xyz.com",
+            //           style: sourceCodeProStyle.copyWith(
+            //               fontSize: 17,
+            //               color: const Color.fromRGBO(35, 106, 242, 1)),
+            //         )
+            //       ],
+            //     ),
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
             const Spacer(),
             ContinueBotton(onTap: () {
               if (path == null) {
@@ -265,11 +265,9 @@ class _UploadBackgroundDBSState extends ConsumerState<UploadBackgroundDBS> {
                 child: InkWell(
                   onTap: () {
                     DocsPickerServices.getImages(index: 0).then((value) {
-                      if (value != null) {
-                        setState(() {
-                          path = value;
-                        });
-                      }
+                      setState(() {
+                        path = value;
+                      });
                     });
                     Navigator.pop(context);
                   },
@@ -298,12 +296,11 @@ class _UploadBackgroundDBSState extends ConsumerState<UploadBackgroundDBS> {
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
-                    DocsPickerServices.getImages(index: 1).then((value) {
-                      if (value != null) {
-                        setState(() {
-                          path = value;
-                        });
-                      }
+                    DocsPickerServices.getImages(index: 1, isImage: false)
+                        .then((value) {
+                      setState(() {
+                        path = value;
+                      });
                     });
                     Navigator.pop(context);
                   },

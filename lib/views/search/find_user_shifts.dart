@@ -17,7 +17,9 @@ import '../widgets/shift_card_shimmer.dart';
 import '../widgets/slider_dots.dart';
 
 class FindUserShift extends ConsumerStatefulWidget {
-  const FindUserShift({Key? key}) : super(key: key);
+  FindUserShift({Key? key, required this.ordertype}) : super(key: key);
+
+  int ordertype;
 
   @override
   ConsumerState<FindUserShift> createState() => _FindUserShiftState();
@@ -25,14 +27,15 @@ class FindUserShift extends ConsumerStatefulWidget {
 
 class _FindUserShiftState extends ConsumerState<FindUserShift> {
   int selectedIndex = 0;
+  int totalshift = 0;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(allShiftviewProvider.notifier).getAllShift();
+      //Shfit Datewise
       ref
           .read(locationShiftviewProvider.notifier)
-          .getShiftByUserLocartion(type: 1);
+          .getShiftByUserLocartion(type: widget.ordertype);
     });
 
     super.initState();
@@ -41,7 +44,7 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
   @override
   Widget build(BuildContext context) {
     final recommandedShift = ref.watch(allShiftviewProvider);
-    final allShift = ref.watch(locationShiftviewProvider);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -50,28 +53,28 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
           children: [
             Row(
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
-                      color: kbluteColor),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(SvgAsset.sorting),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "Sorting",
-                        style: redHatNormal.copyWith(
-                            fontSize: 14,
-                            color: Colors.white,
-                            shadows: textShadow),
-                      )
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding:
+                //       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                //   decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(7),
+                //       color: kbluteColor),
+                //   child: Row(
+                //     children: [
+                //       SvgPicture.asset(SvgAsset.sorting),
+                //       const SizedBox(
+                //         width: 5,
+                //       ),
+                //       Text(
+                //         "Sorting",
+                //         style: redHatNormal.copyWith(
+                //             fontSize: 14,
+                //             color: Colors.white,
+                //             shadows: textShadow),
+                //       )
+                //     ],
+                //   ),
+                // ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -103,17 +106,20 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
               ],
             ),
             size20,
+            // Text(
+            //   "There are ${recommandedShift.data != null ? recommandedShift.data!.length : 0}  shifts in your area.",
+            //   style: sourceCodeProStyle.copyWith(fontSize: 13),
+            // ),
             Text(
-              "There are 4 new shifts in your area.",
-              style: sourceCodeProStyle.copyWith(fontSize: 13),
-            ),
-            Text(
-              "Recommended shifts",
+              widget.ordertype == 2
+                  ? "Date wise shifts"
+                  : "Distance wise shifts",
               style: redHatMedium.copyWith(color: Colors.black, fontSize: 22),
             ),
             const CustomDivider(color: Colors.black),
             size20,
-            _buildRecommandedShift(context),
+            //_buildRecommandedShift(context),
+            _buildAllAvailableShift(),
             recommandedShift.data == null || recommandedShift.data!.isEmpty
                 ? const SizedBox()
                 : Row(
@@ -124,15 +130,15 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
                         ),
                     ],
                   ),
-            Text(
-              "All available shifts",
-              style: redHatMedium.copyWith(color: Colors.black, fontSize: 22),
-            ),
-            const CustomDivider(color: Colors.black),
-            size20,
-            recommandedShift.data == null || recommandedShift.data!.isEmpty
-                ? const SizedBox()
-                : _buildAllAvailableShift()
+            // Text(
+            //   "All available shifts (Date Wise)",
+            //   style: redHatMedium.copyWith(color: Colors.black, fontSize: 22),
+            // ),
+            // const CustomDivider(color: Colors.black),
+            // size20,
+            // recommandedShift.data == null || recommandedShift.data!.isEmpty
+            //     ? const SizedBox()
+            //     : _buildAllAvailableShift()
           ],
         ),
       ),
@@ -140,13 +146,13 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
   }
 
   Widget _buildAllAvailableShift() {
-    final allShift = ref.watch(allShiftviewProvider);
+    final recommandedShift = ref.watch(locationShiftviewProvider);
 
-    switch (allShift.status) {
+    switch (recommandedShift.status) {
       case Status.loadMore:
         return Container();
       case Status.error:
-        return ErrorScreen(error: allShift.errorMessage);
+        return ErrorScreen(error: recommandedShift.errorMessage);
 
       case Status.loading:
         return const ShiftCardShimmer(
@@ -154,11 +160,11 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
         );
 
       case Status.success:
-        return allShift.data!.isNotEmpty
+        return recommandedShift.data!.isNotEmpty
             ? ListView.builder(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: allShift.data!.length,
+                itemCount: recommandedShift.data!.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return Padding(
@@ -169,14 +175,16 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ShiftBrowsingDetailsScreen(
+                              locdata: recommandedShift.data![index],
                               isDayShift: index % 2 == 0,
-                              id: allShift.data![index].shiftid,
+                              id: recommandedShift.data![index].shiftid,
+                              bookpage: true,
                             ),
                           ),
                         );
                       },
                       child: ShiftsCard(
-                        data: allShift.data![index],
+                        data: recommandedShift.data![index],
                         // linearColor: index % 2 == 0 ? Colors.black : kYellowColor,
                         // isUpcomming: index % 2 == 0 ? true : false,
                       ),
@@ -210,12 +218,14 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
         return const ShiftCardShimmer(
           length: 1,
         );
-
       case Status.success:
         return recommandedShift.data!.isNotEmpty
             ? RefreshIndicator(
                 onRefresh: () async {
-                  // ref.read(recommandedShift.notifier).userBookingShift();
+                  ref
+                      .read(locationShiftviewProvider.notifier)
+                      .getShiftByUserLocartion(type: widget.ordertype);
+                  totalshift = recommandedShift.data!.length + 1;
                 },
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.30,
@@ -245,6 +255,8 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
                               MaterialPageRoute(
                                 builder: (context) =>
                                     ShiftBrowsingDetailsScreen(
+                                  locdata: recommandedShift.data![index],
+                                  bookpage: true,
                                   isDayShift: index % 2 == 0,
                                   id: recommandedShift.data![index].shiftid,
                                 ),

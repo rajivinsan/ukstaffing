@@ -51,6 +51,38 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<APIResponse> updatePersonalDetails(
+      {required String address,
+      required String gender,
+      required String dob,
+      required String conuntry,
+      required String mobile}) async {
+    final token = await LocaldbHelper.getToken();
+    final cid = int.parse(token!);
+    var body = ({
+      "address": address,
+      "gender": gender,
+      "dob": dob,
+      "country": conuntry,
+      "mobile": mobile,
+      "cid": cid
+    });
+
+    try {
+      final response = await api.put(
+          ApiUrl.personalDetails + "/" + cid.toString(),
+          body: body,
+          headers: {
+            // 'accept': 'text/plain',
+            // 'Content-Type': 'application/json'
+          });
+      return response;
+    } catch (e) {
+      return APIResponse(success: false, message: e.toString());
+    }
+  }
+
   ///add worke experiece of the customer
   ///take list of work experience model
   @override
@@ -78,7 +110,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<APIResponse> updateBankDetails(
+  Future<APIResponse> postBankDetails(
       {required String nin,
       required String bankCode,
       required String name,
@@ -93,6 +125,29 @@ class AuthRepositoryImpl implements AuthRepository {
     };
     try {
       final response = await api.post(ApiUrl.bankDetails, body: body);
+      return response;
+    } catch (e) {
+      return APIResponse(success: false, message: e.toString());
+    }
+  }
+
+  @override
+  Future<APIResponse> updateBankDetails(
+      {required String nin,
+      required String bankCode,
+      required String name,
+      required String accNo}) async {
+    final String? token = await LocaldbHelper.getToken();
+    Map<String, dynamic> body = {
+      "nin": nin,
+      "name": name,
+      "bankCode": bankCode,
+      "acNo": accNo,
+      "cid": int.parse(token!)
+    };
+    try {
+      final response = await api
+          .put(ApiUrl.bankDetails + "/" + token, body: body, headers: {});
       return response;
     } catch (e) {
       return APIResponse(success: false, message: e.toString());
@@ -204,12 +259,12 @@ class AuthRepositoryImpl implements AuthRepository {
       required int type}) async {
     try {
       Map<String, dynamic> body = {
-        "name": "string",
-        "email": "string",
-        "phone": "string",
-        "profession": "string",
-        "message": "string",
-        "url": "string",
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "profession": profession,
+        "message": message,
+        "url": urls,
         "type": 0
       };
       final response = await api.post(ApiUrl.query, body: body);
@@ -230,6 +285,24 @@ class AuthRepositoryImpl implements AuthRepository {
         "cid": int.parse(token!)
       };
       final response = await api.post(ApiUrl.docUpload, body: body);
+      return response;
+    } catch (e) {
+      return APIResponse(success: false, message: e.toString());
+    }
+  }
+
+  @override
+  Future<APIResponse> updateuploadDoc(
+      {required String docType, required String url, required int cid}) async {
+    try {
+      final String? token = await LocaldbHelper.getToken();
+      Map<String, dynamic> body = {
+        "doctype": docType,
+        "url": url,
+        "cid": int.parse(token!)
+      };
+      final response = await api
+          .put("${ApiUrl.docUpload}/$token/$docType", body: body, headers: {});
       return response;
     } catch (e) {
       return APIResponse(success: false, message: e.toString());

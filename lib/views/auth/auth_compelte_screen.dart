@@ -17,9 +17,7 @@ class AuthCompelteScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: klightGreenColor,
-        leading: const BackButton(
-          color: Colors.black,
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         top: true,
@@ -81,8 +79,9 @@ class AuthCompelteScreen extends StatelessWidget {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const ProfessionalDetailListing()),
+                                builder: (context) => ProfessionalDetailListing(
+                                      pagestate: 0,
+                                    )),
                             (route) => false,
                           );
                         },

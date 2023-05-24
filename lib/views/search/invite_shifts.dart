@@ -106,6 +106,7 @@ class _InviteShiftsState extends State<InviteShifts> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ShiftBrowsingDetailsScreen(
+                          bookpage: false,
                           isDayShift: index % 2 == 0,
                         ),
                       ),
