@@ -55,7 +55,7 @@ class AuthCompelteScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 10),
                       child: Text(
-                        "Awsome work that means you are one step close to being completed !",
+                        "Awesome work that means you are one step close to being completed !",
                         style: sourceCodeProStyle.copyWith(
                           fontSize: 13,
                           fontWeight: FontWeight.normal,

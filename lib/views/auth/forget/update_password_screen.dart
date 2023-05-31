@@ -1,14 +1,14 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/views/auth/signin_page.dart';
 
 class UpdatePassword extends StatefulWidget {
-  UpdatePassword({required this.cid});
+  const UpdatePassword({super.key, required this.cid});
 
   final int cid;
   @override
+
   _UpdatePasswordState createState() => _UpdatePasswordState();
 }
 
@@ -99,7 +99,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                       },
                       // ignore: missing_return
                     )),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 SizedBox(

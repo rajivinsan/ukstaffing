@@ -106,7 +106,7 @@ class _ShiftBrowsingDetailsScreenState
                           getDistanceFromCurrentLocation(data.lat!, data.lon!)
                               .then((v) {
                             //Check Distance in Meters
-                            if (v > 00) {
+                            if (v <= 100) {
                               // MProgressIndicator.show(context);
 
                               MProgressIndicator.hide();
@@ -573,8 +573,6 @@ class _ShiftBrowsingDetailsScreenState
 
 Future<double> getDistanceFromCurrentLocation(double lat, double lng) async {
   // Get current location
-
-  //LocationPermission permission = await Geolocator.requestPermission();
 
   Position position = await LocationHelper().checkAndGetLocation();
 

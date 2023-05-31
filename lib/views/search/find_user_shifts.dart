@@ -51,60 +51,60 @@ class _FindUserShiftState extends ConsumerState<FindUserShift> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                // Container(
-                //   padding:
-                //       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                //   decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(7),
-                //       color: kbluteColor),
-                //   child: Row(
-                //     children: [
-                //       SvgPicture.asset(SvgAsset.sorting),
-                //       const SizedBox(
-                //         width: 5,
-                //       ),
-                //       Text(
-                //         "Sorting",
-                //         style: redHatNormal.copyWith(
-                //             fontSize: 14,
-                //             color: Colors.white,
-                //             shadows: textShadow),
-                //       )
-                //     ],
-                //   ),
-                // ),
-                const SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  onTap: () {
-                    OpenModelSheet.openSheet(context);
-                  },
-                  child: Container(
-                    width: 100,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: kbluteColor),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(SvgAsset.filter),
-                        Text(
-                          "Filter",
-                          style: redHatNormal.copyWith(
-                              fontSize: 14,
-                              color: Colors.white,
-                              shadows: textShadow),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            // Row(
+            //  children: [
+            // Container(
+            //   padding:
+            //       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(7),
+            //       color: kbluteColor),
+            //   child: Row(
+            //     children: [
+            //       SvgPicture.asset(SvgAsset.sorting),
+            //       const SizedBox(
+            //         width: 5,
+            //       ),
+            //       Text(
+            //         "Sorting",
+            //         style: redHatNormal.copyWith(
+            //             fontSize: 14,
+            //             color: Colors.white,
+            //             shadows: textShadow),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            const SizedBox(
+              width: 10,
             ),
+            // InkWell(
+            //   onTap: () {
+            //     OpenModelSheet.openSheet(context);
+            //   },
+            //   child: Container(
+            //     width: 100,
+            //     padding: const EdgeInsets.symmetric(
+            //         horizontal: 10, vertical: 10),
+            //     decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(7),
+            //         color: kbluteColor),
+            //     child: Row(
+            //       children: [
+            //         SvgPicture.asset(SvgAsset.filter),
+            //         Text(
+            //           "Filter",
+            //           style: redHatNormal.copyWith(
+            //               fontSize: 14,
+            //               color: Colors.white,
+            //               shadows: textShadow),
+            //         )
+            //       ],
+            //     ),
+            //  ),
+            //),
+            // ],
+            //),
             size20,
             // Text(
             //   "There are ${recommandedShift.data != null ? recommandedShift.data!.length : 0}  shifts in your area.",

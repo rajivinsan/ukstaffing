@@ -17,10 +17,10 @@ class BottomBarScreen extends ConsumerWidget {
   // ignore: prefer_final_fields
 
   final List<Widget> _pages = [
-    const HomeDashBoard(),
-    const UserShifts(),
-    const BrowseShift(),
-    const TimeSheetMainScreen(),
+    HomeDashBoard(),
+    UserShifts(),
+    BrowseShift(),
+    TimeSheetMainScreen(),
     UserProfileScreen()
   ];
   @override

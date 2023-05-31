@@ -10,6 +10,7 @@ class LocationHelper {
     if (!isServiceEnabled) {
       // RemoveFavouritePopUp()
       //     .errorPopUp(context, "Location services are disabled!");
+      var permission = await Geolocator.openLocationSettings();
       return position!;
     } else {
       print('serviceEnabled');

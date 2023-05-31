@@ -79,7 +79,7 @@ class _HomeDashBoardState extends ConsumerState<HomeDashBoard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Upcomming Booked shifts (7 Days)",
+                          "Upcoming Booked shifts (7 Days)",
                           style: redHatMedium.copyWith(
                               color: Colors.black, fontSize: 20),
                         ),

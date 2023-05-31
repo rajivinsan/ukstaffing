@@ -16,6 +16,7 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   final bool _value = false;
 
+  String shifttype = "Day";
   List<RadioCheckModel> roleChecked = [
     RadioCheckModel(name: "Carer", isSelected: false),
     RadioCheckModel(name: "Support Worker", isSelected: false),
@@ -30,6 +31,7 @@ class _FilterScreenState extends State<FilterScreen> {
   List<String> days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   int selectedDays = 2;
   int selectedLoc = 0;
+
   List<RadioCheckModel> shiftLoc = [
     RadioCheckModel(name: "All Care Location", isSelected: false),
     RadioCheckModel(name: "Favourite Only", isSelected: false),
@@ -136,19 +138,29 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                     child: Row(
                       children: [
-                        Checkbox(
-                          activeColor: const Color(0xff0B5FFF),
-                          value: shiftChecked[i].isSelected,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2)),
-                          splashRadius: 2,
+                        Radio(
+                          value: shiftChecked[i].name,
+                          groupValue: shifttype,
                           onChanged: (value) {
                             setState(() {
-                              shiftChecked[i].isSelected =
-                                  !shiftChecked[i].isSelected!;
+                              shifttype = value.toString();
                             });
                           },
                         ),
+
+                        // Checkbox(
+                        //   activeColor: const Color(0xff0B5FFF),
+                        //   value: shiftChecked[i].isSelected,
+                        //   shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(2)),
+                        //   splashRadius: 2,
+                        //   onChanged: (value) {
+                        //     setState(() {
+                        //       shiftChecked[i].isSelected =
+                        //           !shiftChecked[i].isSelected!;
+                        //     });
+                        //   },
+                        // ),
                         Text(
                           shiftChecked[i].name,
                           style: subStyle,

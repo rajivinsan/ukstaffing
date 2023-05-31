@@ -5,7 +5,7 @@ class AppConstant {
   static const signupAsCustomer = "sign up as employer";
   static const providePersonalDetails = "Provide Personal Details";
   static const certificate = "Provide your certification";
-  static const hereyourLatestUpdate = "HERE ARE YOUR LASTEST UPDATES";
+  static const hereyourLatestUpdate = "HERE ARE YOUR LATEST UPDATES";
   static const updateMyDocument = "Update my documents";
   static const documentReq = "Document Required";
   static const profileMissing = "Your profile is missing some documents.";
@@ -20,7 +20,7 @@ class AppConstant {
   //filter screen
   static const whatDaysOfWeek = "On what days of the week";
   static const minmumrate = "What’s your minimum hourly rate  ?";
-  static const travelWilling = "How far are you willing to travel ?";
+  static const travelWilling = "How far are you willing to travel in Miles ?";
   static const whichRoleWork = "which role do you want to work ?";
   static const whichShiftPref = "which shifts do you prefer to work ?";
 

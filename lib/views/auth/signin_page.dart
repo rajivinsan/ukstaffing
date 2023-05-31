@@ -153,7 +153,7 @@ class _SignInPageState extends State<SignInPage> {
                         );
                       },
                       child: Text(
-                        "Forgat Password",
+                        "Forgot Password",
                         style: TextStyle(color: Colors.orange),
                       )),
                 ),
@@ -235,7 +235,8 @@ Future<List<Register>> fetchusersbyemail(String email) async {
 Future<http.Response?> postByid(int cid, dynamic val) async {
   try {
     final response = await http.post(
-      Uri.parse(ApiUrl.apiBaseUrl + ApiUrl.signUp + '/Postbyid/1055'),
+      Uri.parse(
+          ApiUrl.apiBaseUrl + ApiUrl.signUp + '/Postbyid/' + cid.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:share_plus/share_plus.dart';
@@ -9,8 +11,25 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../constants/color_constant.dart';
 import '../../constants/text_style.dart';
 
-class UserProfileScreen extends StatelessWidget {
-  final username = LocaldbHelper.getUserName();
+class UserProfileScreen extends StatefulWidget {
+  @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  String uname = "";
+  @override
+  void initState() {
+    usname();
+    super.initState();
+  }
+
+  void usname() async {
+    var u = await LocaldbHelper.getUserName();
+    setState(() {
+      uname = u!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,14 +65,17 @@ class UserProfileScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 50,
+                            radius: 40,
                             backgroundColor: Colors.orangeAccent,
-                            child: Icon(Icons.person, size: 60),
+                            child: Icon(Icons.person, size: 50),
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          Text(username.toString()),
+                          Text(
+                            uname.toUpperCase(),
+                            style: TextStyle(fontSize: 17),
+                          ),
                         ],
                       ),
                     ),
@@ -62,7 +84,7 @@ class UserProfileScreen extends StatelessWidget {
                         return Column(
                           children: [
                             const SizedBox(
-                              height: 15,
+                              height: 25,
                             ),
                             ListTile(
                               //contentPadding: EdgeInsets.only(left: 9, right: 0.0),
