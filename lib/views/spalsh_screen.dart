@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sterling/constants/app_constant.dart';
 import 'package:sterling/constants/app_icon_constants.dart';
 import 'package:sterling/services/local_db_helper.dart';
 import 'package:sterling/views/auth/professional_detail_listing.dart';
+import 'package:sterling/views/auth/thanks.dart';
 
 import 'auth/signin_page.dart';
 import 'bottom_bar.dart';
@@ -39,15 +41,21 @@ class _SplashScreenState extends State<SplashScreen> {
       if (isSignup!) {
         // ignore: use_build_context_synchronously
         var user = await fetchbyid(cid);
-
-        Navigator.push(
+        final list = professionalListing.length;
+        final data = await LocaldbHelper.getLisitingDetails();
+        final compeletedList =
+            data.where((element) => element.isCompelete == true);
+        var value = (compeletedList.length / list) * 100.floor();
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => (user.isNotEmpty && user[0].status == 1)
                 ? BottomBarScreen()
-                : ProfessionalDetailListing(
-                    pagestate: 0,
-                  ),
+                : value >= 100
+                    ? ThankYouPage()
+                    : ProfessionalDetailListing(
+                        pagestate: 0,
+                      ),
           ),
         );
       }
@@ -63,8 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // ignore: use_build_context_synchronously
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-                builder: (context) => const SelectProfessionScreen()),
+            MaterialPageRoute(builder: (context) => SelectProfessionScreen()),
             (route) => false);
       }
     });

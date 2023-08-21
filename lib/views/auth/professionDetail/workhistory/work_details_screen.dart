@@ -41,6 +41,7 @@ class WorkDetailsScreen extends ConsumerWidget {
                   );
                   Navigator.pop(context);
                 } else {
+                  MProgressIndicator.hide();
                   value.message.showErrorAlert(context);
                 }
               });

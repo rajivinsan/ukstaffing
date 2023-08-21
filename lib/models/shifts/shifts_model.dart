@@ -12,11 +12,29 @@ String shiftsListongModelToJson(List<ShiftsListongModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ShiftsListongModel {
+  final int? shiftid;
+  final String? category;
+  final DateTime? date;
+  final Time? shiftTime;
+  final Time? endTime;
+  final dynamic postcode;
+  final String? company;
+  final double? price;
+  final double? distance;
+  final dynamic city;
+  final dynamic noCandidate;
+  final dynamic shiftType;
+  final double? lat;
+  final double? long;
+  final dynamic status;
+  final dynamic address;
+
   ShiftsListongModel({
     this.shiftid,
     this.category,
     this.date,
     this.shiftTime,
+    this.endTime,
     this.postcode,
     this.company,
     this.price,
@@ -24,28 +42,21 @@ class ShiftsListongModel {
     this.city,
     this.noCandidate,
     this.shiftType,
+    this.lat,
+    this.long,
+    this.status,
+    this.address,
   });
-
-  final int? shiftid;
-  final String? category;
-  final DateTime? date;
-  final ShiftTime? shiftTime;
-  final dynamic postcode;
-  final String? company;
-  final num? price;
-  final double? distance;
-  final dynamic city;
-  final dynamic noCandidate;
-  final dynamic shiftType;
 
   factory ShiftsListongModel.fromJson(Map<String, dynamic> json) =>
       ShiftsListongModel(
         shiftid: json["shiftid"],
         category: json["category"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        shiftTime: json["shiftTime"] == null
-            ? null
-            : ShiftTime.fromJson(json["shiftTime"]),
+        shiftTime:
+            json["shiftTime"] == null ? null : Time.fromJson(json["shiftTime"]),
+        endTime:
+            json["endTime"] == null ? null : Time.fromJson(json["endTime"]),
         postcode: json["postcode"],
         company: json["company"],
         price: json["price"],
@@ -53,6 +64,10 @@ class ShiftsListongModel {
         city: json["city"],
         noCandidate: json["noCandidate"],
         shiftType: json["shiftType"],
+        lat: json["lat"]?.toDouble(),
+        long: json["long"]?.toDouble(),
+        status: json["status"],
+        address: json["address"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -60,6 +75,7 @@ class ShiftsListongModel {
         "category": category,
         "date": date?.toIso8601String(),
         "shiftTime": shiftTime?.toJson(),
+        "endTime": endTime?.toJson(),
         "postcode": postcode,
         "company": company,
         "price": price,
@@ -67,19 +83,23 @@ class ShiftsListongModel {
         "city": city,
         "noCandidate": noCandidate,
         "shiftType": shiftType,
+        "lat": lat,
+        "long": long,
+        "status": status,
+        "address": address,
       };
 }
 
-class ShiftTime {
-  ShiftTime({
+class Time {
+  final bool? hasValue;
+  final Map<String, double>? value;
+
+  Time({
     this.hasValue,
     this.value,
   });
 
-  final bool? hasValue;
-  final Map<String, dynamic>? value;
-
-  factory ShiftTime.fromJson(Map<String, dynamic> json) => ShiftTime(
+  factory Time.fromJson(Map<String, dynamic> json) => Time(
         hasValue: json["hasValue"],
         value: Map.from(json["value"]!)
             .map((k, v) => MapEntry<String, double>(k, v?.toDouble())),

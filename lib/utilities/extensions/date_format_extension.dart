@@ -27,7 +27,7 @@ extension extString on String {
 
     var outputFormat = DateFormat(' MMM dd , yyyy ');
     var outputDate = outputFormat.format(inputDate);
-    print(outputDate);
+    //print(outputDate);
     return outputDate;
   }
 }

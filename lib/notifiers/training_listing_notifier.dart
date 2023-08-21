@@ -24,6 +24,6 @@ class TrainingListingNotifier extends StateNotifier<List<CertificateModel>> {
           // other todos are not modified
           todo,
     ];
-    print(state);
+    //print(state);
   }
 }

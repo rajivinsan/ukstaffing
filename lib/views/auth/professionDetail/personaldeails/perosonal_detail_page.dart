@@ -84,7 +84,7 @@ class PerosnalDetailPageState extends ConsumerState<PerosnalDetailPage> {
             content: ProfessionalNationality(
               nationalController: nationalController,
               onSelect: (Country country) {
-                print('Select country: ${country.displayName}');
+                //print('Select country: ${country.displayName}');
 
                 nationalController.text = country.displayName;
               },
@@ -121,7 +121,7 @@ class PerosnalDetailPageState extends ConsumerState<PerosnalDetailPage> {
                 _activeStepIndex += 1;
               });
             } else {
-              print('Submited');
+             // print('Submited');
             }
           },
           onStepTapped: (index) {

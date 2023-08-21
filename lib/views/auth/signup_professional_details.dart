@@ -143,7 +143,7 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
                 _activeStepIndex += 1;
               });
             } else {
-              print('Submited');
+              //print('Submited');
             }
           },
           onStepTapped: (index) {
@@ -417,6 +417,7 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
     );
   }
 
+  bool updatenmc = false;
   registerUser({required BuildContext context, WidgetRef? ref}) {
     Map<String, dynamic> body = {
       "firstName": widget.firstName,
@@ -453,23 +454,21 @@ class SignupProfessionalState extends ConsumerState<SignupProfessional> {
       authProvider.userRegistration(res.toJson()).then((value) {
         MProgressIndicator.hide();
         if (value.success) {
-          value.message.showSuccessAlert(context);
           LocaldbHelper.saveSignup(isSignUp: true);
           LocaldbHelper.saveToken(token: value.data["cid"]);
           LocaldbHelper.saveUserName(
-              name: widget.firstName + " " + widget.lastName);
+              name: "${widget.firstName} ${widget.lastName}");
 
-          if (professionStyle == "Carer") {
-            ref.read(listingProvider.notifier).updateProfessionList(8);
-            LocaldbHelper.saveListingDetails(
-              list: ref.watch(listingProvider),
+          {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AuthCompelteScreen(
+                        value: professionStyle!,
+                      )),
             );
           }
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AuthCompelteScreen()),
-          );
+          ;
         } else {
           value.message.showErrorAlert(context);
         }

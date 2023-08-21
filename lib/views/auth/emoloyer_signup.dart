@@ -4,6 +4,7 @@ import 'package:sterling/provider/repository_provider.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/MProgressIndicator.dart';
 import 'package:sterling/views/auth/thanks.dart';
+import 'package:sterling/views/auth/thanksemployeer.dart';
 
 import '../../constants/color_constant.dart';
 import '../../constants/text_style.dart';
@@ -68,7 +69,7 @@ class _EmployerSignUpState extends ConsumerState<EmployerSignUp> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ThankYouPage()),
+                                builder: (context) => ThanksEmployer()),
                           );
                         } else {
                           value.message.showErrorAlert(context);
@@ -135,6 +136,12 @@ class _EmployerSignUpState extends ConsumerState<EmployerSignUp> {
                         if (!_email.text.trim().isEmail()) {
                           return "Please Enter valid email";
                         }
+
+                        final emailEx = RegExp(
+                            r'^((?!gmail\.com|yahoo\.com|hotmail\.com|rediff\.com).)*$');
+                        if (!emailEx.hasMatch(val)) {
+                          return 'Please enter professional email only';
+                        }
                         return null;
                       },
                     ),
@@ -184,8 +191,8 @@ class _EmployerSignUpState extends ConsumerState<EmployerSignUp> {
                       inputType: TextInputType.phone,
                       controller: _password,
                       validator: (val) {
-                        if (val!.isEmpty && _password.text.trim().isEmpty) {
-                          return "Please Enter Mobile No.";
+                        if (val!.isEmpty || val.length != 10) {
+                          return "Please Enter 10 Digit Mobile No.";
                         }
                         return null;
                       },
@@ -199,7 +206,7 @@ class _EmployerSignUpState extends ConsumerState<EmployerSignUp> {
                       controller: _messageController,
                       maxLines: 8,
                       validator: (val) {
-                        if (val!.isEmpty && _password.text.trim().isEmpty) {
+                        if (val!.isEmpty) {
                           return "Please Enter Your Message";
                         }
                         return null;

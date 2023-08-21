@@ -12,6 +12,8 @@ import '../../../../utilities/ui/MProgressIndicator.dart';
 import '../../../widgets/stepper_bottom_control.dart';
 import '../../../widgets/stepper_form.dart';
 
+String Typevalue = "";
+
 class NmcPage extends ConsumerStatefulWidget {
   const NmcPage({Key? key, required this.id}) : super(key: key);
   final int id;
@@ -25,6 +27,7 @@ class _NmcPageState extends ConsumerState<NmcPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _nmcPin = TextEditingController();
   final TextEditingController _nmcType = TextEditingController();
+
   int initialPage = 0;
 
   int _activeStepIndex = 0;
@@ -70,7 +73,7 @@ class _NmcPageState extends ConsumerState<NmcPage> {
                 _activeStepIndex += 1;
               });
             } else {
-              print('Submited');
+              //print('Submited');
             }
           },
           onStepTapped: (index) {
@@ -109,7 +112,7 @@ class _NmcPageState extends ConsumerState<NmcPage> {
               }
             }
           } else {
-            if (_nmcType.text.trim().isEmpty) {
+            if (Typevalue.trim().isEmpty) {
               "Please Enter Nurse Type".showErrorAlert(context);
             } else {
               postNamc(ref);
@@ -132,7 +135,7 @@ class _NmcPageState extends ConsumerState<NmcPage> {
         .postNmc(
             date: _dateController.text.trim(),
             nmcPin: _nmcPin.text.trim(),
-            nurseType: _nmcType.text.trim())
+            nurseType: Typevalue)
         .then((value) {
       MProgressIndicator.hide();
       if (value.success) {
@@ -234,6 +237,7 @@ class NmcPin extends StatelessWidget {
 class NurseType extends StatefulWidget {
   const NurseType({super.key, required this.type});
   final TextEditingController type;
+
   @override
   State<NurseType> createState() => _NurseTypeState();
 }
@@ -254,13 +258,51 @@ class _NurseTypeState extends State<NurseType> {
           style: signUpSubHeadStyle,
         ),
         size20,
-        CustomTextFormField(
-          controller: widget.type,
-          label: "Nurse Type",
-          validator: (val) {
-            return null;
-          },
-        )
+        DropdownButtonFormField(
+            value: Typevalue,
+            validator: (value) {
+              if (value.toString().isEmpty) {
+                return "Select Type";
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            items: const [
+              DropdownMenuItem(
+                child: Text(""),
+                value: "",
+              ),
+              DropdownMenuItem(
+                child: Text("Adult Nursing"),
+                value: "Adult Nursing",
+              ),
+              DropdownMenuItem(
+                child: Text("Children's Nursing"),
+                value: "Children's Nursing",
+              ),
+              DropdownMenuItem(
+                child: Text("Learning Disabilities Nursing"),
+                value: "Learning Diabilities Nursing",
+              ),
+              DropdownMenuItem(
+                child: Text("Mental Health Nursing"),
+                value: "Mental Health Nursing",
+              )
+            ],
+            onChanged: ((value) {
+              setState(() {
+                Typevalue = value.toString();
+              });
+            })),
+        // CustomTextFormField(
+        //   controller: widget.type,
+        //   label: "Nurse Type",
+        //   validator: (val) {
+        //     return null;
+        //   },
+        // )
       ],
     );
   }

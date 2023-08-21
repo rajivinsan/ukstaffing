@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
@@ -74,41 +75,52 @@ class AddWorkScreenState extends ConsumerState<AddWorkScreen> {
                 style: textFiledLabelStyle,
               ),
               size10,
-              InkWell(
-                onTap: () async {
-                  startDate = await _selectDate(context);
-                  _startDate.text = startDate!;
-                  setState(() {});
+              CustomTextFormField(
+                sufficIcon: InkWell(
+                    onTap: () async {
+                      startDate = await _selectDate(context);
+                      _startDate.text = startDate!;
+                      setState(() {});
+                    },
+                    child: Icon(Icons.date_range)),
+                //enable: false,
+                textInputAction: TextInputAction.none,
+                inputType: TextInputType.none,
+                validator: (val) {
+                  if (val!.isEmpty || val == "") {
+                    return "Please Enter Start Date";
+                  }
+                  return null;
                 },
-                child: CustomTextFormField(
-                  enable: false,
-                  // validator: (val) {
-                  //   if (val!.isEmpty || val == "") {
-                  //     return "Please Enter Start Date";
-                  //   }
-                  //   return null;
-                  // },
-                  label: "Date",
-                  controller: _startDate,
-                ),
+                label: "Date",
+                controller: _startDate,
               ),
               size10,
               Text(
-                "End Date\n(Leave blank if you still work here)",
+                "End Date\n(if you are currently working then select today's date)",
                 style: textFiledLabelStyle,
               ),
               size10,
-              InkWell(
-                onTap: () async {
-                  endDate = await _selectDate(context);
-                  _endDate.text = startDate!;
-                  setState(() {});
-                },
-                child: CustomTextFormField(
-                  enable: false,
-                  label: "Date",
-                  controller: _endDate,
+              CustomTextFormField(
+                //  enable: false,
+                sufficIcon: InkWell(
+                  onTap: () async {
+                    endDate = await _selectDate(context);
+                    _endDate.text = endDate!;
+                    setState(() {});
+                  },
+                  child: const Icon(Icons.date_range),
                 ),
+                textInputAction: TextInputAction.none,
+                inputType: TextInputType.none,
+                label: "Date",
+                controller: _endDate,
+                validator: (val) {
+                  if (val!.isEmpty || val == "") {
+                    return "Please Enter End Date";
+                  }
+                  return null;
+                },
               ),
               size10,
               size20,
@@ -123,7 +135,7 @@ class AddWorkScreenState extends ConsumerState<AddWorkScreen> {
                           cid: int.parse(token!),
                           endDate: _endDate.text);
                       if (kDebugMode) {
-                        print(ref.watch(workListProvider).toString());
+                       // print(ref.watch(workListProvider).toString());
                       }
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);

@@ -171,16 +171,12 @@ class _IdBadgePageState extends ConsumerState<IdBadgePage> {
     MProgressIndicator.show(context);
     AwsS3Configuration.upload(path: docsPath!).then((value) {
       if (value != "") {
-        AwsS3Configuration.getUrl(key: value).then((value) {
-          if (value != "") {
-            MProgressIndicator.hide();
-            setState(() {
-              photo = value;
-            });
-
-            uploadIdbadge(ref: ref);
-          }
+        MProgressIndicator.hide();
+        setState(() {
+          photo = value;
         });
+
+        uploadIdbadge(ref: ref);
       }
     });
   }

@@ -47,17 +47,22 @@ class _TimeSheetPageState extends ConsumerState<TimeSheetPage> {
                   child: ListView.builder(
                     itemCount: timesheet.data!.length,
                     shrinkWrap: true,
-                    itemBuilder: (context, index) => Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: TimeSheetCard(
-                          Company: timesheet.data![index].company,
-                          Shift_Date: timesheet.data![index].date
-                              .toString()
-                              .substring(0, 10),
-                          User_Spent_Time:
-                              "${timesheet.data![index].shiftTime!.value!.entries.elementAt(2).value.toInt()}:${timesheet.data![index].shiftTime!.value!.entries.elementAt(4).value.toInt()}",
-                          Pay_Amount: "",
-                        )),
+                    itemBuilder: (context, index) {
+                      DateTime startDate = timesheet.data![index].startDate;
+                      DateTime endDate = timesheet.data![index].endDate;
+                      var hoursDifference =
+                          calculateHoursDifference(startDate, endDate);
+                      return Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: TimeSheetCard(
+                            Company: timesheet.data![index].company,
+                            Shift_Date: timesheet.data![index].date
+                                .toString()
+                                .substring(0, 10),
+                            User_Spent_Time: '$hoursDifference',
+                            Pay_Amount: "",
+                          ));
+                    },
                   ),
                 ))
             : const Center(
@@ -70,4 +75,14 @@ class _TimeSheetPageState extends ConsumerState<TimeSheetPage> {
         return Container();
     }
   }
+}
+
+String calculateHoursDifference(DateTime startDate, DateTime endDate) {
+  Duration difference = endDate.difference(startDate);
+
+  int totalMinutes = difference.inMinutes;
+  int hours = totalMinutes ~/ 60; // Calculate hours
+  int minutes = totalMinutes % 60; // Calculate remaining minutes
+
+  return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
 }

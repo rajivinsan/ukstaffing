@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sterling/services/aws_amplify_services.dart';
 import 'package:sterling/services/docs_picker_services.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/utility.dart';
@@ -12,7 +13,7 @@ import '../../../../constants/color_constant.dart';
 import '../../../../constants/text_style.dart';
 import '../../../../provider/repository_provider.dart';
 import '../../../../provider/services_provider.dart';
-import '../../../../services/aws_amplify_services.dart';
+
 import '../../../../services/local_db_helper.dart';
 import '../../../../utilities/ui/MProgressIndicator.dart';
 import '../../../../utilities/ui/size_config.dart';
@@ -208,15 +209,11 @@ class _UploadBackgroundDBSState extends ConsumerState<UploadBackgroundDBS> {
     MProgressIndicator.show(context);
     AwsS3Configuration.upload(path: path!).then((value) {
       if (value != "") {
-        AwsS3Configuration.getUrl(key: value).then((value) {
-          if (value != "") {
-            MProgressIndicator.hide();
-            setState(() {
-              docsUrl = value;
-            });
-            updateBackground(ref);
-          }
+        MProgressIndicator.hide();
+        setState(() {
+          docsUrl = value;
         });
+        updateBackground(ref);
       }
     });
   }

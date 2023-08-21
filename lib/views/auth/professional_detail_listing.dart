@@ -44,6 +44,10 @@ class ProfessionalDetailListing extends ConsumerWidget {
     } else {
       overallProgress = (compeletedList.length / list.length) * 100.floor();
     }
+    Future signout() async {
+      await LocaldbHelper.removeAllSharedPref();
+    }
+    //overallProgress = 100;
 
     return Scaffold(
       appBar: AppBar(
@@ -63,18 +67,19 @@ class ProfessionalDetailListing extends ConsumerWidget {
                   color: kPrimaryColor,
                 ),
               ),
-        leading: const BackButton(
-          color: Colors.black,
-        ),
+        // leading: const BackButton(
+        //   color: Colors.black,
+        // ),
         backgroundColor: KAppbarbackgroundColor,
         actions: [
           InkWell(
             onTap: () {
-              LocaldbHelper.removeAllSharedPref();
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SplashScreen()));
+              signout().then((value) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SplashScreen()));
+              });
             },
             child: Center(
               child: Padding(
@@ -103,27 +108,27 @@ class ProfessionalDetailListing extends ConsumerWidget {
           )
         ],
       ),
-      floatingActionButton: InkWell(
-        onTap: () {
-          LocaldbHelper.getToken().then((value) {
-            print(value);
-          });
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => BottomBarScreen()));
-        },
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            color: kPrimaryColor,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.message,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      // floatingActionButton: InkWell(
+      //   onTap: () {
+      //     LocaldbHelper.getToken().then((value) {
+      //       print(value);
+      //     });
+      //     // Navigator.push(context,
+      //     //     MaterialPageRoute(builder: (context) => BottomBarScreen()));
+      //   },
+      //   child: Container(
+      //     height: 50,
+      //     width: 50,
+      //     decoration: BoxDecoration(
+      //       color: kPrimaryColor,
+      //       shape: BoxShape.circle,
+      //     ),
+      //     child: const Icon(
+      //       Icons.message,
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      // ),
       backgroundColor: scaffoldBg,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -192,6 +197,14 @@ class ProfessionalDetailListing extends ConsumerWidget {
                                     context);
                                 break;
                               case 4:
+                                navigate(
+                                  ReferencePage(
+                                    id: unCompleteList[index].id,
+                                  ),
+                                  context,
+                                );
+                                break;
+                              case 41:
                                 navigate(
                                   ReferencePage(
                                     id: unCompleteList[index].id,

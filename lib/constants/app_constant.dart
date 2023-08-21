@@ -56,9 +56,15 @@ final List<ProfessionDetailsModel> professionalListing = [
     isCompelete: false,
   ),
   ProfessionDetailsModel(
-    name: "References",
+    name: "References 1",
     percent: 0,
     id: 4,
+    isCompelete: false,
+  ),
+  ProfessionDetailsModel(
+    name: "References 2",
+    percent: 0,
+    id: 41,
     isCompelete: false,
   ),
   ProfessionDetailsModel(
@@ -98,7 +104,7 @@ List<CertificateModel> certificationList = [
   CertificateModel(
     id: 1,
     isUploaded: false,
-    name: "Medication Adminstrator",
+    name: "Medication Administrator",
   ),
   CertificateModel(
     id: 2,
@@ -108,7 +114,7 @@ List<CertificateModel> certificationList = [
   CertificateModel(
     id: 3,
     isUploaded: false,
-    name: "Helathy & Safety",
+    name: "Health & Safety",
   ),
   CertificateModel(
     id: 4,
@@ -148,7 +154,7 @@ List<CertificateModel> certificationList = [
   CertificateModel(
     id: 11,
     isUploaded: false,
-    name: "Medication Competency Assetment",
+    name: "Medication Competency Assessment",
   ),
   CertificateModel(
     id: 12,

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sterling/constants/text_style.dart';
@@ -8,8 +6,8 @@ import '../../../constants/color_constant.dart';
 import '../../../utilities/ui/size_config.dart';
 import '../shadow_container.dart';
 
-class TimeSheetCard extends StatelessWidget {
-  TimeSheetCard(
+class PaymentSheetCard extends StatelessWidget {
+  PaymentSheetCard(
       {Key? key,
       required this.Company,
       required this.Shift_Date,
@@ -62,7 +60,6 @@ class TimeSheetCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   this.Company,
@@ -74,6 +71,10 @@ class TimeSheetCard extends StatelessWidget {
                 ),
                 Text(
                   "Spent Hours :" + this.User_Spent_Time,
+                  style: redHatNormal,
+                ),
+                Text(
+                  "Amount :" + this.Pay_Amount,
                   style: redHatNormal,
                 ),
               ],

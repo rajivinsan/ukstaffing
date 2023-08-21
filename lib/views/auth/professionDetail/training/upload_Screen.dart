@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:sterling/constants/app_constant.dart';
-import 'package:sterling/constants/app_icon_constants.dart';
+
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
+import 'package:sterling/services/aws_amplify_services.dart';
 import 'package:sterling/services/docs_picker_services.dart';
+import 'package:sterling/services/upload.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
 import 'package:sterling/views/widgets/contimue_button.dart';
 
 import '../../../../provider/repository_provider.dart';
 import '../../../../provider/services_provider.dart';
-import '../../../../services/aws_amplify_services.dart';
+
 import '../../../../services/local_db_helper.dart';
 import '../../../../utilities/ui/MProgressIndicator.dart';
 import '../../../widgets/progressbar_appbar.dart';
@@ -254,91 +256,90 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
         });
   }
 
-  uploadDoc() {
+  uploadDoc() async {
+    final String? token = await LocaldbHelper.getToken();
     MProgressIndicator.show(context);
     AwsS3Configuration.upload(path: docs!).then((value) {
       if (value != "") {
-        AwsS3Configuration.getUrl(key: value).then((value) {
-          //insert new doc
-          if (value != "" && widget.pagestate == 0) {
+        //insert new doc
+        if (value != "" && widget.pagestate == 0) {
+          MProgressIndicator.hide();
+          setState(() {
+            url = value;
+          });
+
+          ref
+              .read(authRepositoryProvider)
+              .uploadDoc(
+                  cid: 2, docType: widget.uploadCertificateName, url: url!)
+              .then((value) {
             MProgressIndicator.hide();
-            setState(() {
-              url = value;
-            });
-
-            ref
-                .read(authRepositoryProvider)
-                .uploadDoc(
-                    cid: 2, docType: widget.uploadCertificateName, url: url!)
-                .then((value) {
-              MProgressIndicator.hide();
-              if (value.success) {
-                value.message.showSuccessAlert(context);
-                ref
-                    .read(trainingListingProvider.notifier)
-                    .updateProfessionList(widget.id);
-                LocaldbHelper.saveTrainingListingDetails(
-                    list: ref.watch(trainingListingProvider));
-                final trainglist = ref.watch(trainingListingProvider);
-                final traingunCompleteList = trainglist
-                    .where((element) => element.isUploaded == false)
-                    .toList();
-                final traingcompeletedList = trainglist
-                    .where((element) => element.isUploaded == true)
-                    .toList();
-                if (traingcompeletedList.length == certificationList.length) {
-                  ref.read(listingProvider.notifier).updateProfessionList(2);
-                  LocaldbHelper.saveListingDetails(
-                    list: ref.watch(listingProvider),
-                  );
-                }
-                Navigator.pop(context);
-              } else {
-                value.message.showErrorAlert(context);
+            if (value.success) {
+              value.message.showSuccessAlert(context);
+              ref
+                  .read(trainingListingProvider.notifier)
+                  .updateProfessionList(widget.id);
+              LocaldbHelper.saveTrainingListingDetails(
+                  list: ref.watch(trainingListingProvider));
+              final trainglist = ref.watch(trainingListingProvider);
+              final traingunCompleteList = trainglist
+                  .where((element) => element.isUploaded == false)
+                  .toList();
+              final traingcompeletedList = trainglist
+                  .where((element) => element.isUploaded == true)
+                  .toList();
+              if (traingcompeletedList.length == certificationList.length) {
+                ref.read(listingProvider.notifier).updateProfessionList(2);
+                LocaldbHelper.saveListingDetails(
+                  list: ref.watch(listingProvider),
+                );
               }
-            });
-          }
+              Navigator.pop(context);
+            } else {
+              value.message.showErrorAlert(context);
+            }
+          });
+        }
 
-          //update existing doc
-          if (value != "" && widget.pagestate == 1) {
+        //update existing doc
+        if (value != "" && widget.pagestate == 1) {
+          MProgressIndicator.hide();
+          setState(() {
+            url = value;
+          });
+
+          ref
+              .read(authRepositoryProvider)
+              .updateuploadDoc(
+                  cid: 2, docType: widget.uploadCertificateName, url: url!)
+              .then((value) {
             MProgressIndicator.hide();
-            setState(() {
-              url = value;
-            });
-
-            ref
-                .read(authRepositoryProvider)
-                .updateuploadDoc(
-                    cid: 2, docType: widget.uploadCertificateName, url: url!)
-                .then((value) {
-              MProgressIndicator.hide();
-              if (value.success) {
-                value.message.showSuccessAlert(context);
-                ref
-                    .read(trainingListingProvider.notifier)
-                    .updateProfessionList(widget.id);
-                LocaldbHelper.saveTrainingListingDetails(
-                    list: ref.watch(trainingListingProvider));
-                final trainglist = ref.watch(trainingListingProvider);
-                final traingunCompleteList = trainglist
-                    .where((element) => element.isUploaded == false)
-                    .toList();
-                final traingcompeletedList = trainglist
-                    .where((element) => element.isUploaded == true)
-                    .toList();
-                if (traingcompeletedList.length == certificationList.length) {
-                  ref.read(listingProvider.notifier).updateProfessionList(2);
-                  LocaldbHelper.saveListingDetails(
-                    list: ref.watch(listingProvider),
-                  );
-                }
-                Navigator.pop(context);
-              } else {
-                value.message.showErrorAlert(context);
+            if (value.success) {
+              value.message.showSuccessAlert(context);
+              ref
+                  .read(trainingListingProvider.notifier)
+                  .updateProfessionList(widget.id);
+              LocaldbHelper.saveTrainingListingDetails(
+                  list: ref.watch(trainingListingProvider));
+              final trainglist = ref.watch(trainingListingProvider);
+              final traingunCompleteList = trainglist
+                  .where((element) => element.isUploaded == false)
+                  .toList();
+              final traingcompeletedList = trainglist
+                  .where((element) => element.isUploaded == true)
+                  .toList();
+              if (traingcompeletedList.length == certificationList.length) {
+                ref.read(listingProvider.notifier).updateProfessionList(2);
+                LocaldbHelper.saveListingDetails(
+                  list: ref.watch(listingProvider),
+                );
               }
-            });
-          }
-        });
+              Navigator.pop(context);
+            } else {
+              value.message.showErrorAlert(context);
+            }
+          });
+        }
       }
     });
   }

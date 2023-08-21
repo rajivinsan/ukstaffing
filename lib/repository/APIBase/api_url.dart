@@ -1,6 +1,6 @@
 class ApiUrl {
-  static const String baseUrl = 'http://api.sterlingstaffing.co.uk/';
-  static const String apiBaseUrl = "http://api.sterlingstaffing.co.uk/API/";
+  static const String baseUrl = 'https://api.sterlingstaffing.co.uk/';
+  static const String apiBaseUrl = "https://api.sterlingstaffing.co.uk/API/";
   static const String signUp = "Registration";
   static const String personalDetails = "PersonalDetails";
   static const String addWorkExperience = 'WorkExperience';
@@ -15,11 +15,11 @@ class ApiUrl {
 
   ///shit related api
   static const upcommingShift = "ShiftUpComing/";
+  static const shiftLoc = "ShiftLoc/";
   static const shiftBook = "ShiftBook/";
 
   static const shiftDetailUsingID = "Shift/";
   static const timeSheetDetail = "TimeSheet/";
 
-  static const shiftLoc = "ShiftLoc/";
   static const payMent = "PaymentDetails/";
 }

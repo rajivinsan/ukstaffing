@@ -1,13 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sterling/constants/app_icon_constants.dart';
 import 'package:sterling/constants/color_constant.dart';
 import 'package:sterling/constants/text_style.dart';
+import 'package:sterling/services/local_db_helper.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
 import 'package:sterling/views/auth/professional_detail_listing.dart';
 import 'package:sterling/views/widgets/contimue_button.dart';
 
-class AuthCompelteScreen extends StatelessWidget {
-  const AuthCompelteScreen({Key? key}) : super(key: key);
+class AuthCompelteScreen extends ConsumerStatefulWidget {
+  AuthCompelteScreen({Key? key, required this.value}) : super(key: key);
+  final String value;
+
+  @override
+  ConsumerState<AuthCompelteScreen> createState() => _AuthCompelteScreenState();
+}
+
+class _AuthCompelteScreenState extends ConsumerState<AuthCompelteScreen> {
+  Future<void> updateNMC() async {
+    // Step 1: Read the list from SharedPreferences
+    var todoList = await LocaldbHelper.getLisitingDetails();
+
+    // Step 2: Find the record with id = 8 and update it
+    int targetId = 8;
+    int indexToUpdate = todoList.indexWhere((todo) => todo.id == targetId);
+    if (indexToUpdate != -1) {
+      var updatedTodo = todoList[indexToUpdate].copWith(isCompelete: true);
+      todoList[indexToUpdate] = updatedTodo;
+    }
+    // Step 3: Save the updated list back to SharedPreferences
+    await LocaldbHelper.saveListingDetails(list: todoList);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateNMC();
+  }
 
   @override
   Widget build(BuildContext context) {

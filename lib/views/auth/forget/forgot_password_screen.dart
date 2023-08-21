@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -44,11 +43,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void sendOtp() async {}
 
   void sendResetLink(BuildContext context) async {
-    final smtpServer = gmail('rajiv.saharan0@gmail.com', 'kshhokdhkirwfenw');
+    final smtpServer = gmail('sterlingstaffing8@gmail.com', 'bzdmcrdcgyirrfrf');
     // Replace 'your_email@gmail.com' and 'your_password' with your actual email and password
     RandOtp = generateRandom();
     final message = Message()
-      ..from = const Address('rajiv.saharan0@gmail.com')
+      ..from = const Address('sterlingstaffing8@gmail.com')
       ..recipients.add(_emailController.text)
       ..subject = 'Password Reset'
       ..text = 'Verification Code for email verification: ${RandOtp}';

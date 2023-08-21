@@ -27,6 +27,7 @@ class ReferencePage extends ConsumerStatefulWidget {
 
 class _ReferencePageState extends ConsumerState<ReferencePage> {
   final TextEditingController _orginisation = TextEditingController();
+  final TextEditingController _email = TextEditingController();
   final TextEditingController _employer = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
   final TextEditingController _endDate = TextEditingController();
@@ -53,6 +54,7 @@ class _ReferencePageState extends ConsumerState<ReferencePage> {
             content: AddReferencePage(
               employeer: _employer,
               orginisation: _orginisation,
+              email: _email,
               isWorking: isWorkingNow,
               formKey: formKey,
               endDate: _endDate,
@@ -88,7 +90,7 @@ class _ReferencePageState extends ConsumerState<ReferencePage> {
                 _activeStepIndex += 1;
               });
             } else {
-              print('Submited');
+              //print('Submited');
             }
           },
           onStepTapped: (index) {
@@ -145,7 +147,7 @@ class _ReferencePageState extends ConsumerState<ReferencePage> {
         .read(authRepositoryProvider)
         .addReference(
             employer: _employer.text.trim(),
-            orginisation: _orginisation.text.trim(),
+            orginisation: _orginisation.text.trim() + ' -' + _email.text + '',
             startDate: _startDate.text.trim(),
             endDate: isWorkingNow ? null : _endDate.text.trim())
         .then((value) {
@@ -182,7 +184,7 @@ class _ReferenceScreenState extends State<ReferenceScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: Text(
             "Professional References",
             style: codeProHeadStyle.copyWith(shadows: textShadow),
@@ -210,6 +212,7 @@ class AddReferencePage extends StatefulWidget {
       {super.key,
       required this.employeer,
       required this.orginisation,
+      required this.email,
       required this.endDate,
       required this.formKey,
       required this.onTap,
@@ -217,6 +220,7 @@ class AddReferencePage extends StatefulWidget {
       required this.startDate});
   final TextEditingController employeer;
   final TextEditingController orginisation;
+  final TextEditingController email;
   final TextEditingController startDate;
   final TextEditingController endDate;
   final GlobalKey<FormState> formKey;
@@ -238,10 +242,10 @@ class _AddReferencePageState extends State<AddReferencePage> {
             "Profession References",
             style: codeProHeadStyle.copyWith(shadows: textShadow),
           ),
-          Utility.vSize(20),
+          Utility.vSize(5),
           CustomTextFormField(
             controller: widget.employeer,
-            label: "Name",
+            label: "Referee Name",
             validator: ((val) {
               if (val == null || widget.employeer.text.trim().isEmpty) {
                 return "Please Enter Name";
@@ -250,7 +254,7 @@ class _AddReferencePageState extends State<AddReferencePage> {
               }
             }),
           ),
-          Utility.vSize(20),
+          Utility.vSize(10),
           CustomTextFormField(
             controller: widget.orginisation,
             label: "Orginisation",
@@ -262,12 +266,32 @@ class _AddReferencePageState extends State<AddReferencePage> {
               }
             }),
           ),
+          Utility.vSize(10),
+          CustomTextFormField(
+            controller: widget.email,
+            label: "Orginization Email",
+            validator: ((val) {
+              if (val == null || widget.email.text.trim().isEmpty) {
+                return "Please Enter Orginization Email";
+              }
+              if (!widget.email.text.trim().isEmail()) {
+                return "Please Enter valid email";
+              }
+
+              final emailEx = RegExp(
+                  r'^((?!gmail\.com|yahoo\.com|hotmail\.com|rediff\.com).)*$');
+              if (!emailEx.hasMatch(val)) {
+                return 'Please enter professional email only';
+              }
+              return null;
+            }),
+          ),
           Utility.vSize(20),
           Text(
             "When did you work here?",
             style: sourceCodeProStyle.copyWith(fontSize: 20),
           ),
-          Utility.vSize(20),
+          Utility.vSize(10),
           InkWell(
             onTap: () {
               showDatePicker(
@@ -323,7 +347,7 @@ class _AddReferencePageState extends State<AddReferencePage> {
               ),
             ),
           ),
-          Utility.vSize(20),
+          //Utility.vSize(20),
           widget.isWorking!
               ? const SizedBox.shrink()
               : InkWell(
@@ -382,7 +406,7 @@ class _AddReferencePageState extends State<AddReferencePage> {
                     ),
                   ),
                 ),
-          Utility.vSize(20),
+          // Utility.vSize(20),
           InkWell(
             onTap: () {},
             child: Row(

@@ -67,7 +67,7 @@ class ShiftRepoImpl implements ShiftRepository {
           for (int i = 0; i < response.data.length; i++) {
             final data = ShiftsListongModel.fromJson(response.data[i]);
             list.add(data);
-            print(data);
+            //print(data);
           }
         }
         return APIResponse(

@@ -48,7 +48,7 @@ class _ShiftBrowsingDetailsScreenState
     final AsyncValue<ShiftDetailModel?> details = ref.watch(
       shiftDetailsProvider(widget.id ?? 0),
     );
-    print(details.value);
+    //print(details.value);
     TextStyle whiteSubStyle = redHatNormal.copyWith(
       color: Colors.white,
       fontSize: 16,
@@ -82,7 +82,7 @@ class _ShiftBrowsingDetailsScreenState
             ),
             child: widget.bookpage
                 ? CommonButton(
-                    name: "Apply now",
+                    name: "Book Shift",
                     onPressed: () {
                       MProgressIndicator.show(context);
                       ref
@@ -91,7 +91,7 @@ class _ShiftBrowsingDetailsScreenState
                           .then((value) {
                         MProgressIndicator.hide();
                         if (value.success) {
-                          "Apply Successfully".showSuccessAlert(context);
+                          "Booked Successfully".showSuccessAlert(context);
                           Navigator.pop(context);
                         } else {
                           "Something Went Wrong".showErrorAlert(context);
@@ -136,7 +136,7 @@ class _ShiftBrowsingDetailsScreenState
                                       .then((value) {
                                     MProgressIndicator.hide();
                                     if (value.success) {
-                                      "Shift Apply Successfully"
+                                      "Request Successfully"
                                           .showSuccessAlert(context);
                                       Navigator.pop(context);
                                     } else {
@@ -145,9 +145,9 @@ class _ShiftBrowsingDetailsScreenState
                                     }
                                   });
                                 }
-                                return print('pressedOK');
+                               // return print('pressedOK');
                               }
-                              return print('pressedCancel');
+                             // return print('pressedCancel');
                             },
                             textColor: Colors.white,
                           )

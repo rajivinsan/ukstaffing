@@ -8,6 +8,7 @@ import 'package:sterling/constants/enum.dart';
 import 'package:sterling/constants/text_style.dart';
 import 'package:sterling/models/shifts/shifts_model.dart';
 import 'package:sterling/services/aws_amplify_services.dart';
+import 'package:sterling/services/aws_amplify_services.dart';
 import 'package:sterling/utilities/extensions/Extensions.dart';
 import 'package:sterling/utilities/helpers/add_shift_in_calender.dart';
 import 'package:sterling/utilities/ui/size_config.dart';
@@ -61,10 +62,7 @@ class _HomeDashBoardState extends ConsumerState<HomeDashBoard> {
               children: [
                 InkWell(
                   onTap: () async {
-                    final data = await AwsS3Configuration.getUrl(
-                      key: "key",
-                    );
-                    print(data);
+                    
                   },
                   child: const TextWithShadow(
                     text: AppConstant.hereyourLatestUpdate,

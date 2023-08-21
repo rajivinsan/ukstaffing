@@ -13,13 +13,13 @@ class AppLanguageProvider extends ChangeNotifier {
     if (prefs.getString('language_code') == null) {
       localeString = "en";
       notifyListeners();
-      print("new lang fetch $localeString");
+      //print("new lang fetch $localeString");
       return Null;
     }
     localeString = prefs.getString('language_code');
 
     notifyListeners();
-    print("new lang fetch $localeString");
+    //print("new lang fetch $localeString");
     return Null;
   }
 
@@ -29,7 +29,7 @@ class AppLanguageProvider extends ChangeNotifier {
     if (prefs.getString('language_code') != lang) {
       await prefs.setString('language_code', lang!);
       localeString = lang;
-      print("new lang change $lang");
+      //print("new lang change $lang");
       notifyListeners();
     }
   }

@@ -126,7 +126,7 @@ class _SignInPageState extends State<SignInPage> {
                                   name:
                                       "${value[0].firstName} ${value[0].lastName}");
 
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => value[0].status == 1

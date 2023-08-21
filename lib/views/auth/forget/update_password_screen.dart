@@ -121,7 +121,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   "cid": widget.cid,
                                   "pass": _passController.text,
                                 };
-                            print(widget.cid);
+                            //print(widget.cid);
 
                             if (_passController.text ==
                                 _confirmPassController.text) {

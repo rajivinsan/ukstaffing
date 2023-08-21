@@ -29,13 +29,14 @@ class GettingPageState extends ConsumerState<GettingPage> {
   final TextEditingController accNo = TextEditingController();
   final PageController controller = PageController(initialPage: 0);
   var bankFormKey = GlobalKey<FormState>();
+  var NINFormKey = GlobalKey<FormState>();
   int _activeStepIndex = 0;
   List<Step> step() => [
         Step(
           state: _activeStepIndex <= 0 ? StepState.indexed : StepState.complete,
           isActive: _activeStepIndex >= 0,
           title: const SizedBox.shrink(),
-          content: InsuurenceNumber(controller: inN),
+          content: InsuurenceNumber(controller: inN, ninKey: NINFormKey),
         ),
         Step(
           state: _activeStepIndex <= 1 ? StepState.indexed : StepState.complete,
@@ -72,7 +73,7 @@ class GettingPageState extends ConsumerState<GettingPage> {
                 _activeStepIndex += 1;
               });
             } else {
-              print('Submited');
+             // print('Submited');
             }
           },
           onStepTapped: (index) {
@@ -92,18 +93,21 @@ class GettingPageState extends ConsumerState<GettingPage> {
         },
         continueFunction: () {
           if (_activeStepIndex < (step().length - 1)) {
-            if (inN.text.isNotEmpty) {
-              if (inN.text.length == 9) {
-                setState(() {
-                  _activeStepIndex += 1;
-                });
-              } else {
-                "Please Enter Valid 9 Digit Insurance Nunmber"
-                    .showErrorAlert(context);
-              }
-            } else {
-              "Please Enter National Insurance Nunmber".showErrorAlert(context);
+            if (NINFormKey.currentState!.validate()) {
+              setState(() {
+                _activeStepIndex += 1;
+              });
             }
+            // if (inN.text.isNotEmpty) {
+            //   if (inN.text.length == 9) {
+
+            //   } else {
+            //     "Please Enter Valid 9 Digit Insurance Nunmber"
+            //         .showErrorAlert(context);
+            //   }
+            // } else {
+            //   "Please Enter National Insurance Nunmber".showErrorAlert(context);
+            // }
           } else {
             if (bankFormKey.currentState!.validate() && widget.pagestate == 0) {
               MProgressIndicator.show(context);
@@ -128,7 +132,7 @@ class GettingPageState extends ConsumerState<GettingPage> {
                 } else {
                   value.message.showErrorAlert(context);
                 }
-                print(value);
+                //print(value);
               });
             }
             if (bankFormKey.currentState!.validate() && widget.pagestate == 1) {
@@ -154,7 +158,7 @@ class GettingPageState extends ConsumerState<GettingPage> {
                 } else {
                   value.message.showErrorAlert(context);
                 }
-                print(value);
+               // print(value);
               });
             }
             // Navigator.push(
@@ -170,36 +174,49 @@ class GettingPageState extends ConsumerState<GettingPage> {
 }
 
 class InsuurenceNumber extends StatelessWidget {
-  const InsuurenceNumber({Key? key, required this.controller})
+  const InsuurenceNumber(
+      {Key? key, required this.controller, required this.ninKey})
       : super(key: key);
   final TextEditingController controller;
+  final GlobalKey<FormState> ninKey;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "What's your national insurance number?",
-          style: signUpHeadStyle,
-        ),
-        size10,
-        Text(
-          "We need this to pay you",
-          style: signUpSubHeadStyle,
-        ),
-        size10,
-        CustomTextFormField(
-          controller: controller,
-          label: "QQKKK",
-          validator: (val) {
-            if (val!.length != 9) {
-              return "Enter Valid 9 Digit Insurance Number";
-            }
+    return Form(
+      key: ninKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "What's your national insurance number?",
+            style: signUpHeadStyle,
+          ),
+          size10,
+          Text(
+            "We need this to pay you",
+            style: signUpSubHeadStyle,
+          ),
+          size10,
+          CustomTextFormField(
+            controller: controller,
+            label: "Enter 9 Digit Alphanumaric Number",
+            validator: (val) {
+              if (val!.isEmpty) {
+                return "Enter Insurance Number";
+              }
+              if (val!.length != 9) {
+                return "Enter Valid 9 Digit Insurance Number";
+              }
 
-            return null;
-          },
-        )
-      ],
+              final regex = RegExp(r'^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$');
+              if (!regex.hasMatch(val)) {
+                return 'Please enter an Alphanumeric No';
+              }
+
+              return null;
+            },
+          )
+        ],
+      ),
     );
   }
 }
@@ -257,6 +274,7 @@ class BankAccountNumber extends StatelessWidget {
             size10,
             CustomTextFormField(
               controller: bankshortcode,
+              inputType: TextInputType.number,
               label: "Sort Code",
               validator: (val) {
                 if (val == null || bankshortcode.text.trim().isEmpty) {
@@ -324,7 +342,13 @@ class BanckShortCode extends StatelessWidget {
         CustomTextFormField(
           controller: _controller,
           label: "QQKKK",
-          validator: (val) {
+          inputType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter a value';
+            } else if (value.length != 9) {
+              return 'Please enter a 9 digit value';
+            }
             return null;
           },
         )

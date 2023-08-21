@@ -13,12 +13,12 @@ class LocationHelper {
       var permission = await Geolocator.openLocationSettings();
       return position!;
     } else {
-      print('serviceEnabled');
+      //print('serviceEnabled');
       await Geolocator.requestPermission();
       permission = await Geolocator.checkPermission();
-      print(permission);
+      //print(permission);
       if (permission != LocationPermission.denied) {
-        print('access granted');
+      //  print('access granted');
         position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best,
         );

@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:crypto/crypto.dart';
+import 'package:http/http.dart' as http;
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+
+import 'package:intl/intl.dart';
 
 import '../amplifyconfiguration.dart';
 
@@ -13,10 +17,10 @@ class AwsS3Configuration {
       final storage = AmplifyStorageS3();
       await Amplify.addPlugins([storage, auth]);
 
-      //call Amplify.configure to use the initialized categories in your app
+      // Call Amplify.configure to use the initialized categories in your app
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
-      safePrint('An error occurred configuring Amplify: $e');
+      print('An error occurred configuring Amplify: $e');
     }
   }
 
@@ -28,14 +32,16 @@ class AwsS3Configuration {
       metadata['name'] = 'filename';
       metadata['desc'] = 'A test file';
       S3UploadFileOptions options = S3UploadFileOptions(
-          accessLevel: StorageAccessLevel.guest, metadata: metadata);
+        accessLevel: StorageAccessLevel.guest,
+        metadata: metadata,
+      );
 
-      UploadFileResult result = await Amplify.Storage.uploadFile(
+      var result = await Amplify.Storage.uploadFile(
         key: key,
         local: local,
         options: options,
         onProgress: (progress) {
-          print("PROGRESS: ${progress.getFractionCompleted()}");
+          //("PROGRESS: ${progress.getFractionCompleted()}");
         },
       );
       return result.key;
@@ -45,15 +51,5 @@ class AwsS3Configuration {
     }
   }
 
-  static Future<String> getUrl({required String key}) async {
-    try {
-      final result = await Amplify.Storage.getUrl(key: key);
-
-      safePrint('Got URL: ${result.url}');
-      return result.url;
-    } on StorageException catch (e) {
-      safePrint('Error getting download URL: $e');
-      return "";
-    }
+  
   }
-}

@@ -133,7 +133,7 @@ class _SignUpPage1State extends State<SignUpPage1>
                 _activeStepIndex += 1;
               });
             } else {
-              print('Submited');
+             // print('Submited');
             }
           },
           onStepTapped: (index) {
@@ -159,7 +159,7 @@ class _SignUpPage1State extends State<SignUpPage1>
           } else {
             if (formkey.currentState!.validate() &&
                 (_lat != null && _lon != null)) {
-              print(postCode.text.trim());
+             // print(postCode.text.trim());
 
               Navigator.push(
                 context,

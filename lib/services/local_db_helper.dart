@@ -88,8 +88,8 @@ class LocaldbHelper {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.clear();
     final data = sharedPreferences.getString("listing");
-
-    print(data);
+    return true;
+    //print(data);
   }
 
   // save selected location

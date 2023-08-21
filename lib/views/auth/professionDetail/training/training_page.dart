@@ -24,9 +24,9 @@ class TrainingPage extends ConsumerWidget {
     final compeletedList =
         list.where((element) => element.isUploaded == true).toList();
 
-    if (compeletedList.length == certificationList.length) {
-      Navigator.pop(context);
-    }
+    // if (compeletedList.length == certificationList.length) {
+    //    //Navigator.pop(context);
+    // }
 
     return Scaffold(
       appBar: const AppBarProgress(name: "Training", progress: 0.2),

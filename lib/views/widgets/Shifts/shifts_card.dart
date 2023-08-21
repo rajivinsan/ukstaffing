@@ -134,8 +134,15 @@ class ShiftsCard extends StatelessWidget {
                       ),
                       Text(
                         data.shiftTime == null
+                            ? ""
+                            : "${data.shiftTime!.value!.entries.elementAt(2).value.toInt().toString().padLeft(2, '0')}:${data.shiftTime!.value!.entries.elementAt(4).value.toInt().toString().padLeft(2, '0')}",
+                        style: style,
+                      ),
+                      Text(" - "),
+                      Text(
+                        data.endTime == null
                             ? "20:00-08:00"
-                            : "${data.shiftTime!.value!.entries.elementAt(2).value.toInt()}:${data.shiftTime!.value!.entries.elementAt(4).value.toInt()}",
+                            : "${data.endTime!.value!.entries.elementAt(2).value.toInt().toString().padLeft(2, '0')}:${data.endTime!.value!.entries.elementAt(4).value.toInt().toString().padLeft(2, '0')}",
                         style: style,
                       )
                     ],

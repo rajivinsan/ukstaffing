@@ -14,6 +14,7 @@ import 'package:sterling/views/widgets/shift_card_shimmer.dart';
 
 import '../viewmodel/user_own_shift_view_model.dart';
 import '../widgets/common_button.dart';
+import '../widgets/paymentsheet/Paymentsheet_card.dart';
 import '../widgets/timesheet/timesheet_card.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,79 +47,33 @@ class _PaymentTimeSheetState extends ConsumerState<PaymentTimeSheet> {
             padding: const EdgeInsets.all(10),
             child: Column(
               children: [
-                Container(
-                  padding: const EdgeInsets.only(
-                      left: 10, top: 10, bottom: 10, right: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        10,
-                      ),
-                      border: Border.all(
-                        color: kGreenColor,
-                        width: 3,
-                      )),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: kGreenColor),
-                        child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          padding: const EdgeInsets.all(4),
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: kGreenColor),
-                            padding: const EdgeInsets.all(2),
-                            child: const Icon(
-                              FontAwesomeIcons.exclamation,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Text(
-                          '''You can instantly receive 60% of your shift payments by tapping on them and enabling Instant Pay.''',
-                          textAlign: TextAlign.left,
-                          style: redHatMedium.copyWith(
-                              color: klightTextColor, fontSize: 15),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
                 size20,
                 ListView.builder(
                   itemCount: timesheet.data!.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: InkWell(
-                          onTap: () {
-                            showSheet(timesheet.data![index].shiftId);
-                          },
-                          child: TimeSheetCard(
-                            Company: timesheet.data![index].company,
-                            Shift_Date: timesheet.data![index].date
-                                .toString()
-                                .substring(0, 10),
-                            User_Spent_Time:
-                                "${timesheet.data![index].shiftTime!.value!.entries.elementAt(2).value.toInt()}:${timesheet.data![index].shiftTime!.value!.entries.elementAt(4).value.toInt()}",
-                            Pay_Amount:
-                                timesheet.data![index].payment.toString(),
-                          ))),
+                  itemBuilder: (context, index) {
+                    DateTime startDate = timesheet.data![index].startDate;
+                    DateTime endDate = timesheet.data![index].endDate;
+
+                    var hoursDifference =
+                        calculateHoursDifference(startDate, endDate);
+                    return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: InkWell(
+                            onTap: () {
+                              showSheet(timesheet.data![index].shiftId);
+                            },
+                            child: PaymentSheetCard(
+                              Company: timesheet.data![index].company,
+                              Shift_Date: timesheet.data![index].date
+                                  .toString()
+                                  .substring(0, 10),
+                              User_Spent_Time: '$hoursDifference ',
+                              Pay_Amount:
+                                  timesheet.data![index].payment.toString(),
+                            )));
+                  },
                 )
               ],
             ),
@@ -129,6 +84,16 @@ class _PaymentTimeSheetState extends ConsumerState<PaymentTimeSheet> {
       default:
         return Container();
     }
+  }
+
+  String calculateHoursDifference(DateTime startDate, DateTime endDate) {
+    Duration difference = endDate.difference(startDate);
+
+    int totalMinutes = difference.inMinutes;
+    int hours = totalMinutes ~/ 60; // Calculate hours
+    int minutes = totalMinutes % 60; // Calculate remaining minutes
+
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
   }
 
   List<PaymentDetails> listdate = [];
@@ -219,7 +184,7 @@ class _PaymentTimeSheetState extends ConsumerState<PaymentTimeSheet> {
                       return Center(child: CircularProgressIndicator());
                     } else {
                       return ListView.builder(
-                        itemCount: 1,
+                        itemCount: listdate.length,
                         itemBuilder: (context, index) {
                           return ListTile(
                             leading: Icon(Icons.add_card),
